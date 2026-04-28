@@ -1,0 +1,30 @@
+def create_user(user):
+    if user.__class__.__name__ == 'User':
+        if len(user.id) > 0 and len(user.password) > 0:
+            if (user.client and not user.administrator) or (user.administrator and not user.client):
+                try:
+                    db.session.query(User).filter_by(id=user.id).one()
+                    raise ValueError("L'utilisateur existe déjà en base de donnée.")
+                except NoResultFound as e:
+                    typeDeCompte = 'client' if user.client else 'administrateur'
+                    if user.administrator and user.statut == 'client':
+                        raise ValueError("Un client ne peut pas créer un compte administrateur.")
+                    print("Creation d'un nouveau compte ",typeDeCompte)
+                    print("id=",user.id)
+                    # Ajouter à la session
+                    db.session.add(user)
+                    db.session.commit()
+            else:
+                raise ValueError("Soit l'utilisateur est client, soit il est administrateur.")
+        else:
+            raise ValueError("L'identifiant et le mot de passe doivent être renseigné.")
+    else:
+        raise ValueError("L'utilisateur n'est pas valide.")
+
+def authenticate(id, password):  
+    try: 
+        db.session.query(User).filter_by(id=id, password=password).one()    
+        return True 
+    except NoResultFound: 
+        print("Cet utilisateur n'existe pas en base.") 
+        return False
