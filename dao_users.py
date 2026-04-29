@@ -20,3 +20,20 @@ def create_user(user):
             raise ValueError("L'identifiant et le mot de passe doivent être renseigné.")
     else:
         raise ValueError("L'utilisateur n'est pas valide.")
+
+
+
+def get_user(id):
+    try:
+        user = db.session.query(User).filter_by(id=id).one()
+    except NoResultFound:
+        raise ValueError("L'utilisateur n'est pas enregistré en base.")
+    return user
+
+
+def get_list_of_users():
+    # Récupérer tous les utilisateur
+    all_users = db.session.query(User).all()
+    print("\nTous les utilisateurs:")
+    for user in all_users:
+        print(user)   

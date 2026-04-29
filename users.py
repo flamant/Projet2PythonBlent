@@ -1,5 +1,5 @@
 from flask import Blueprint
-from dao_users import create_user
+from dao_users import create_user, get_user, get_list_of_users
 from metier_users import authenticate
 
 users_bp = Blueprint('users', __name__)
@@ -18,12 +18,20 @@ def register_utilisateur():
     body = request.get_json()
     id = body.get("id", "")
     statutDuDemandeur = body.get("statut")
-    creerClient = body.get("client")
-    creerAdministrateur = body.get("administrator")
+    createClient = body.get("client")
+    createAdministrator = body.get("administrator")
+    id_requester = request.headers.get("id", "0")
     salt = request.headers.get("salt", "0")
     hashed = request.headers.get("hashed", "0")
-    authenticate
-    create_user(User(id=id, password=password, statut=statutDuDemandeur, client=creerClient, administrator=creerAdministrateur))
+    auth = authenticate(id_requester, salt, hashed)
+    if auth:
+        user = get_user(id_requester)
+        if (user.administrator or (user.createClient and not createAdministrator)):
+            create_user(User(id=id, salt=salt, hashed=hashed, client=createClient, administrator=createAdministrator))
+        else:
+            raise ValueError("The user is not allowed to register such an account")
+    else:
+        raise ValueError("The user with these details is not authenticated in the data base")
     return jsonify({"message": f"Compte cree pour {typeDeCompte} id={id}"}), 201
 
 
@@ -31,16 +39,17 @@ def register_utilisateur():
 def connection_and_generate_token():
     body = request.get_json()
     id = body.get("id", "")
-    statut = body.get("statut")
-    typeDeCompte = 'le client' if statut == "client" else "l'administrateur"
-    password = request.headers.get("password", "0")
-    if authenticate(id, password):
-        if statut == 'administrateur':
+    id = request.headers.get("id", "0")
+    salt = request.headers.get("salt", "0")
+    hashed = request.headers.get("hashed", "0")
+    if authenticate(id, salt, hashed):
+        user = get_user(id)
+        if user.administrator:
             token = jwt.encode(
                 {
                     "exp": datetime.utcnow() + timedelta(hours=1),
                     "user": id,
-                    "role": "administrateur"
+                    "role": "administrator"
                 },
                 JWT_SECRET,
                 algorithm="HS256"
@@ -67,7 +76,7 @@ def getListOfUsers():
     token = request.headers.get("token", "0")
     payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
     role = payload.get("role")
-    if role == "administrateur" and decode_token(token):
+    if role == "administrator" and decode_token(token):
         get_list_of_users()
         return {"message": "Ok !"}, 200
     else:
