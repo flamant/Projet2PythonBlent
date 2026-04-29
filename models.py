@@ -65,7 +65,8 @@ class User(db.Model):
     __tablename__ = 'users'
     
     id = db.Column(db.String(100), primary_key=True)
-    password = db.Column(db.String(20), nullable=False)
+    salt = db.Column(db.Bytes(256), nullable=False)
+    hashed = db.Column(db.Bytes(256), nullable=False)
     client = db.Column(db.Boolean, unique=False, default=False)
     administrator = db.Column(db.Boolean, unique=False, default=False)
 

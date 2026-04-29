@@ -3,6 +3,20 @@ from utils_encoding.py import hash_password
 salt_admin, hashed_admin = hash_password("admin")
 salt_antoine, hashed_antoine = hash_password("antoine")
 
+
+print("salt_admin")
+print(salt_admin)
+
+print("hashed_admin")
+print(hashed_admin)
+
+print("salt_antoine")
+print(salt_antoine)
+
+print("hashed_antoine")
+print(hashed_antoine)
+
+
 def add_sample_products_and_add_admin_and_client():
     # Créer quelques produits
     products = [

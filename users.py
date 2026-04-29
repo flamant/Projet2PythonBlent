@@ -1,5 +1,6 @@
 from flask import Blueprint
 from dao_users import create_user
+from metier_users import authenticate
 
 users_bp = Blueprint('users', __name__)
 
@@ -19,9 +20,9 @@ def register_utilisateur():
     statutDuDemandeur = body.get("statut")
     creerClient = body.get("client")
     creerAdministrateur = body.get("administrator")
-    typeDeCompte = 'le client' if statutDuDemandeur == "client" else "l'administrateur"
-    password = request.headers.get("password", "0")
-    
+    salt = request.headers.get("salt", "0")
+    hashed = request.headers.get("hashed", "0")
+    authenticate
     create_user(User(id=id, password=password, statut=statutDuDemandeur, client=creerClient, administrator=creerAdministrateur))
     return jsonify({"message": f"Compte cree pour {typeDeCompte} id={id}"}), 201
 
