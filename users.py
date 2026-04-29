@@ -1,4 +1,5 @@
 from flask import Blueprint
+from dao_users import create_user
 
 users_bp = Blueprint('users', __name__)
 
@@ -11,7 +12,7 @@ def user_profile(username):
     return f'Profil de {username}'
 
 
-@app.route('/api/auth/register', methods=["POST"])
+@users_bp.route('/auth/register', methods=["POST"])
 def register_utilisateur():
     body = request.get_json()
     id = body.get("id", "")
@@ -25,7 +26,7 @@ def register_utilisateur():
     return jsonify({"message": f"Compte cree pour {typeDeCompte} id={id}"}), 201
 
 
-@app.route('/api/auth/login', methods=["POST"])
+@users_bp.route('/auth/login', methods=["POST"])
 def connection_and_generate_token():
     body = request.get_json()
     id = body.get("id", "")
@@ -58,3 +59,15 @@ def connection_and_generate_token():
         return jsonify(data),200
     else:
         return jsonify({"error": "Identifiant/Mot de passe invalides."}), 401
+
+
+@users_bp.route('', methods=["GET"])
+def getListOfUsers():
+    token = request.headers.get("token", "0")
+    payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+    role = payload.get("role")
+    if role == "administrateur" and decode_token(token):
+        get_list_of_users()
+        return {"message": "Ok !"}, 200
+    else:
+        return {"error": "Jeton d'accès invalide ou le role qui fait la demande n'est pas administrateur."}, 401     

@@ -66,7 +66,6 @@ class User(db.Model):
     
     id = db.Column(db.String(100), primary_key=True)
     password = db.Column(db.String(20), nullable=False)
-    statut = db.Column(db.String(20), nullable=False)
     client = db.Column(db.Boolean, unique=False, default=False)
     administrator = db.Column(db.Boolean, unique=False, default=False)
 
