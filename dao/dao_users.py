@@ -20,11 +20,3 @@ def create_user(user):
             raise ValueError("L'identifiant et le mot de passe doivent être renseigné.")
     else:
         raise ValueError("L'utilisateur n'est pas valide.")
-
-def authenticate(id, password):  
-    try: 
-        db.session.query(User).filter_by(id=id, password=password).one()    
-        return True 
-    except NoResultFound: 
-        print("Cet utilisateur n'existe pas en base.") 
-        return False
