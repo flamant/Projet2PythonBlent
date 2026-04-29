@@ -1,6 +1,7 @@
 from flask import Blueprint
 from dao_users import create_user, get_user, get_list_of_users
 from metier_users import authenticate
+from utils_encoding import decode_token
 
 users_bp = Blueprint('users', __name__)
 
