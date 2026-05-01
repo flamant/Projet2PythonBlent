@@ -3,6 +3,12 @@ from dao_users import create_user, get_user, get_list_of_users
 from metier_users import authenticate
 from utils_encoding import decode_token
 
+import jwt
+from flask import Flask, request, jsonify
+from datetime import datetime, timedelta
+from models import create_user, User
+import array as arr
+
 users_bp = Blueprint('users', __name__)
 
 @users_bp.route('/')
@@ -18,7 +24,7 @@ def user_profile(username):
 def register_utilisateur():
     body = request.get_json()
     id = body.get("id", "")
-    statutDuDemandeur = body.get("statut")
+    password = body.get("password")
     createClient = body.get("client")
     createAdministrator = body.get("administrator")
     id_requester = request.headers.get("id", "0")
@@ -33,7 +39,7 @@ def register_utilisateur():
             raise ValueError("The user is not allowed to register such an account")
     else:
         raise ValueError("The user with these details is not authenticated in the data base")
-    return jsonify({"message": f"Compte cree pour {typeDeCompte} id={id}"}), 201
+    return jsonify({"message": f"Compte cree pour id={id}"}), 201
 
 
 @users_bp.route('/auth/login', methods=["POST"])

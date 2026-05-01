@@ -7,6 +7,13 @@ from sqlalchemy import func
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///basic_store.db'
+db = SQLAlchemy(app)
+
+
+engine = create_engine("sqlite:///basic_store.db")
+
 
 class CartItem(db.Model):
     __tablename__ = 'cart_items'
@@ -29,12 +36,13 @@ class Product(db.Model):
     
     id = db.Column(db.String(10), primary_key=True)
     name = db.Column(db.String(100), nullable=False)
+    category = db.Column(db.String(20), nullable=False)
     description = db.Column(db.Text)
     price = db.Column(db.Float, nullable=False)
     stock = db.Column(db.Integer, default=0)
     
     def __repr__(self):
-        return 'Product id={0}, name={1}, description={2}, price={3}, stock={4}'.format(self.id, self.name, self.description, self.price, self.stock)
+        return 'Product id={0}, name={1}, category={2}, description={3}, price={4}, stock={5}'.format(self.id, self.name, self.category, self.description, self.price, self.stock)
 
 class Cart(db.Model):
     __tablename__ = 'carts'

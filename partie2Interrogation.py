@@ -1,13 +1,25 @@
 from metier_users import authenticate
+import requests
+from utils_encoding import hash_password
 
+salt_admin , hashed_admin = hash_password("admin")
+print("salt_admin")
+print(salt_admin)
+print("hashed_admin")
+print(hashed_admin)
 
+salt_antoine , hashed_antoine = hash_password("antoine")
+print("salt_antoine")
+print(salt_antoine)
+print("hashed_antoine")
+print(hashed_antoine)
 
 print("Inscription d'un nouvel utilisateur (POST /api/auth/register).")
 print("--------------------------------------------------------------")
 
-print("register (admin@login.fr, admin) as administrator.")
+print("register (admin@login.fr, secret) as administrator.")
 print("--------------------------------------------------")
-req = requests.post("http://127.0.0.1:5000/api/auth/register", headers={"id": "admin@login.fr" ,"salt": "xxxx", "hashed": "yyyy"}, 
+req = requests.post("http://127.0.0.1:5000/api/auth/register", headers={"id": "admin@login.fr" ,"salt": "b'B\x9d\x9d\x80\x17\xbb\xcbB\xd7\x04\xdfE\xe23\x1e\x9d'", "hashed": "b'\x14\x9a\x1f#E\x0e7\xff6\xc68\xf7\x18K\xf8\x12\xca\xbf\x1d\xe5\xad\x9aW\xc6SA\xb4x>\x84\xa6D'"}, 
 json={
     'id': "administrator@admin.fr",
     'password': "secret",
@@ -16,10 +28,11 @@ json={
 })
 print("request status is "+ str(req.status_code))
 
+"""
 print("Connexion et génération de token JWT (POST /api/auth/login).")
 print("connect as (admin@login.fr,admin) (administrator) and generate token.")
 print("---------------------------------------------------------------------")
-req = requests.post("http://127.0.0.1:5000/api/auth/login", headers={"id": "admin@login.fr" ,"salt": "xxxx", "hashed": "yyyy"})
+req = requests.post("http://127.0.0.1:5000/api/auth/login", headers={"id": "admin@login.fr" ,"salt": "b'B\x9d\x9d\x80\x17\xbb\xcbB\xd7\x04\xdfE\xe23\x1e\x9d'", "hashed": "yyyy"})
 print("request status is "+ str(req.status_code))
 
 token = req.json().get("token")
@@ -29,3 +42,4 @@ print("get list of users interrogé par un administrateur.")
 print("--------------------------------------------------")
 req = requests.get("http://127.0.0.1:5000/api/users", headers={"token": token})
 print("request status is "+ str(req.status_code))
+"""

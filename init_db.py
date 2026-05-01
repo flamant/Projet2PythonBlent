@@ -20,9 +20,9 @@ print(hashed_antoine)
 def add_sample_products_and_add_admin_and_client():
     # Créer quelques produits
     products = [
-        Product(id='prod001', name='Azus TUF F15', description='PC Portable Gamer', price=899, stock=10),
-        Product(id='prod002', name='UGreen Souris sans fil', description='Souris ergonomique', price=49.99, stock=20),
-        Product(id='prod003', name='Logitech Clavier mécanique', description='Clavier pour gaming', price=129, stock=15)
+        Product(id='prod001', name='Azus TUF F15', category='computer', description='PC Portable Gamer', price=899, stock=10),
+        Product(id='prod002', name='UGreen Souris sans fil', category='souris', description='Souris ergonomique', price=49.99, stock=20),
+        Product(id='prod003', name='Logitech Clavier mécanique', category='clavier', description='Clavier pour gaming', price=129, stock=15)
     ]
 
         # Merge évite les doublons si le script est relancé
