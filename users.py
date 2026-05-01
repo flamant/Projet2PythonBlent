@@ -9,6 +9,7 @@ from flask import request, jsonify
 from datetime import datetime, timedelta
 from models import User
 import array as arr
+from utils_encoding import hash_password
 
 users_bp = Blueprint('users', __name__)
 
@@ -35,7 +36,8 @@ def register_utilisateur():
     if auth:
         user = get_user(id_requester)
         if (user.administrator or (user.createClient and not createAdministrator)):
-            create_user(User(id=id, salt=salt, hashed=hashed, client=createClient, administrator=createAdministrator))
+            salt , hashed= hash_password(password)
+            create_user(User(id=id, salt=str(salt, utf8), hashed=str(hashed, utf8), client=createClient, administrator=createAdministrator))
         else:
             raise ValueError("The user is not allowed to register such an account")
     else:
