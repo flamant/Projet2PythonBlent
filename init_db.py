@@ -1,4 +1,4 @@
-from utils_encoding.py import hash_password
+from utils_encoding import hash_password
 
 salt_admin, hashed_admin = hash_password("admin")
 salt_antoine, hashed_antoine = hash_password("antoine")
@@ -34,8 +34,8 @@ def add_sample_products_and_add_admin_and_client():
     print("Produits ajoutés avec succès!")
 
     users = [
-        User(id='admin@login.fr', salt=salt_admin, hashed=hashed_admin, client=False, administrator=True),
-        User(id='flamant@club-internet.fr', salt=salt_antoine, hashed=hashed_antoine,client=True, administrator=False)
+        User(id='admin@login.fr', salt=str(salt_admin, 'utf8'), hashed=str(hashed_admin, 'utf-8'), client=False, administrator=True),
+        User(id='flamant@club-internet.fr', salt=str(salt_antoine, 'utf-8'), hashed=str(hashed_antoine, 'utf-8'),client=True, administrator=False)
     ]
 
         # Merge évite les doublons si le script est relancé

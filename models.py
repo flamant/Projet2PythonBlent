@@ -7,6 +7,8 @@ from sqlalchemy import func
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 
+
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///basic_store.db'
 db = SQLAlchemy(app)
@@ -73,15 +75,15 @@ class User(db.Model):
     __tablename__ = 'users'
     
     id = db.Column(db.String(100), primary_key=True)
-    salt = db.Column(db.Bytes(256), nullable=False)
-    hashed = db.Column(db.Bytes(256), nullable=False)
+    salt = db.Column(db.String(256), nullable=False)
+    hashed = db.Column(db.String(256), nullable=False)
     client = db.Column(db.Boolean, unique=False, default=False)
     administrator = db.Column(db.Boolean, unique=False, default=False)
 
 
     
     def __repr__(self):
-        return 'id={0}, password={1}, statut={2}, client={3}, administrator={4}'.format(self.id, self.password, self.statut, self.client, self.administrator)
+        return 'id={0}, salt={1}, hashed={2}, client={3}, administrator={4}'.format(self.id, self.salt, self.hashed, self.client, self.administrator)
 
 
 
