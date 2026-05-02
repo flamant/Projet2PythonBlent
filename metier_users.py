@@ -1,3 +1,6 @@
+from models import db, User
+from sqlalchemy.orm.exc import NoResultFound
+
 def authenticate(id, salt, hashed):  
     try: 
         db.session.query(User).filter_by(id=id, salt=salt, hashed=hashed).one()    

@@ -32,7 +32,10 @@ def register_utilisateur():
     id_requester = request.headers.get("id", "0")
     salt = request.headers.get("salt", "0")
     hashed = request.headers.get("hashed", "0")
+    print("ca passe1")
     auth = authenticate(id_requester, salt, hashed)
+    print(auth)
+    print("ca passe2")
     if auth:
         user = get_user(id_requester)
         if (user.administrator or (user.createClient and not createAdministrator)):
