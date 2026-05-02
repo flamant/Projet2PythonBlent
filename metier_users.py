@@ -1,7 +1,7 @@
 from models import User
 from sqlalchemy.orm.exc import NoResultFound
 from models import SQLAlchemy
-from app import app
+from app1 import app
 
 db = SQLAlchemy(app)
 
