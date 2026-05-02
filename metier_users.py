@@ -1,5 +1,9 @@
-from models import db, User
+from models import User
 from sqlalchemy.orm.exc import NoResultFound
+from models import SQLAlchemy
+from app import app
+
+db = SQLAlchemy(app)
 
 def authenticate(id, salt, hashed):  
     try: 
