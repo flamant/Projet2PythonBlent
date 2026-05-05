@@ -1,17 +1,13 @@
-from flask import Flask
-from flask import Blueprint
+from flask import Blueprint, request, jsonify
 from dao_users import create_user, get_user, get_list_of_users
 from metier_users import authenticate
-from utils_encoding import decode_token
-
+from utils_encoding import decode_token, hash_password
 import jwt
-from flask import request, jsonify
 from datetime import datetime, timedelta
 from models import User
-import array as arr
-from utils_encoding import hash_password
 
-users_bp = Blueprint('users', __name__)
+users_bp = Blueprint("users", __name__)
+JWT_SECRET = "change-me"  # à mettre dans une variable d'env ensuite
 
 @users_bp.route('/')
 def users():
