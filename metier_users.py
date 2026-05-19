@@ -1,6 +1,5 @@
 from sqlalchemy.orm.exc import NoResultFound
-from models import User
-from extensions import db
+from models import db, User
 
 def authenticate(id, salt, hashed):
     try:

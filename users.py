@@ -4,7 +4,7 @@ from metier_users import authenticate
 from utils_encoding import decode_token, hash_password
 import jwt
 from datetime import datetime, timedelta
-from models import User
+from models import app, User
 
 users_bp = Blueprint("users", __name__)
 JWT_SECRET = "change-me"  # à mettre dans une variable d'env ensuite

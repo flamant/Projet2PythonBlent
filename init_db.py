@@ -1,4 +1,6 @@
 from utils_encoding import hash_password
+from models import db, app
+import models
 
 salt_admin, hashed_admin = hash_password("admin")
 salt_antoine, hashed_antoine = hash_password("antoine")
