@@ -18,5 +18,6 @@ app.register_blueprint(products_bp, url_prefix="/api/products")
 def home():
     return "Accueil"
 
+
 if __name__ == "__main__":
     app.run(debug=True)

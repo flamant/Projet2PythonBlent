@@ -26,17 +26,16 @@ def register_utilisateur():
     createClient = body.get("client")
     createAdministrator = body.get("administrator")
     id_requester = request.headers.get("id", "0")
-    salt = request.headers.get("salt", "0")
-    hashed = request.headers.get("hashed", "0")
+    passwordCaller = request.headers.get("password", "0")
     print("ca passe1")
-    auth = authenticate(id_requester, salt, hashed)
+    auth = authenticate(id_requester, passwordCaller)
     print(auth)
     print("ca passe2")
     if auth:
         user = get_user(id_requester)
         if (user.administrator or (user.createClient and not createAdministrator)):
-            salt , hashed= hash_password(password)
-            create_user(User(id=id, salt=str(salt, utf8), hashed=str(hashed, utf8), client=createClient, administrator=createAdministrator))
+            password= hash_password(password)
+            create_user(User(id=id, password=password, client=createClient, administrator=createAdministrator))
         else:
             raise ValueError("The user is not allowed to register such an account")
     else:

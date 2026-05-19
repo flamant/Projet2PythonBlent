@@ -76,15 +76,14 @@ class User(db.Model):
     __tablename__ = 'users'
     
     id = db.Column(db.String(100), primary_key=True)
-    salt = db.Column(db.String(256), nullable=False)
-    hashed = db.Column(db.String(256), nullable=False)
+    password = db.Column(db.String(500), nullable=False)
     client = db.Column(db.Boolean, unique=False, default=False)
     administrator = db.Column(db.Boolean, unique=False, default=False)
 
 
     
     def __repr__(self):
-        return 'id={0}, salt={1}, hashed={2}, client={3}, administrator={4}'.format(self.id, self.salt, self.hashed, self.client, self.administrator)
+        return 'id={0}, password={1}, client={2}, administrator={3}'.format(self.id, self.password, self.client, self.administrator)
 
 
 

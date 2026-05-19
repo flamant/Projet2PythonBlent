@@ -14,15 +14,21 @@ def decode_token(token):
     )
 
 
-def hash_password(password: str) -> tuple[bytes, bytes]:
-    salt = os.urandom(16)  # Random salt for uniqueness
+#def hash_password(password: str) -> tuple[bytes, bytes]:
+#    salt = os.urandom(16)  # Random salt for uniqueness
     
-    kdf = PBKDF2HMAC(
-        algorithm=hashes.SHA256(),
-        length=32,
-        salt=salt,
-        iterations=480000,  # OWASP recommended minimum
-    )
+#    kdf = PBKDF2HMAC(
+#        algorithm=hashes.SHA256(),
+#        length=32,
+#        salt=salt,
+#        iterations=480000,  # OWASP recommended minimum
+#    )
     
-    hashed = kdf.derive(password.encode())
-    return salt, hashed
+#    hashed = kdf.derive(password.encode())
+#    return salt, hashed
+
+
+def hash_password(password):
+    password_bytes = password.encode('utf-8')
+    hash_object = hashlib.sha256(password_bytes)
+    return hash_object.hexdigest()
