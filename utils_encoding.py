@@ -2,6 +2,7 @@ import cryptography
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import os
+import hashlib
 
 
 JWT_SECRET = "d3fb12750c2eff92120742e1b334479e"
