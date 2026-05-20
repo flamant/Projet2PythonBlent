@@ -43,14 +43,11 @@ def register_utilisateur():
     return jsonify({"message": f"Compte cree pour id={id}"}), 201
 
 
-@users_bp.route('/auth/login', methods=["POST"])
+@users_bp.route('/auth/login', methods=["GET"])
 def connection_and_generate_token():
-    body = request.get_json()
-    id = body.get("id", "")
     id = request.headers.get("id", "0")
-    salt = request.headers.get("salt", "0")
-    hashed = request.headers.get("hashed", "0")
-    if authenticate(id, salt, hashed):
+    password = request.headers.get("password", "0")
+    if authenticate(id, password):
         user = get_user(id)
         if user.administrator:
             token = jwt.encode(
@@ -72,8 +69,7 @@ def connection_and_generate_token():
             JWT_SECRET,
             algorithm="HS256"
             )
-        data = {"token": token,
-        "message": token + "pour " + typeDeCompte + "id=" + id}
+        data = {"token": token }
         return jsonify(data),200
     else:
         return jsonify({"error": "Identifiant/Mot de passe invalides."}), 401

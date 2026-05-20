@@ -1,6 +1,7 @@
 from utils_encoding import hash_password
 from models import db, app
 import models
+from models import User, Product
 
 hashed_admin = hash_password("admin")
 hashed_antoine = hash_password("antoine")
@@ -43,6 +44,6 @@ def add_sample_products_and_add_admin_and_client():
     print("administrator et client ajouté avec succès!")
 
 
-
-    with app.app_context():
-        add_sample_products_and_add_admin_and_client()
+with app.app_context():
+    add_sample_products_and_add_admin_and_client()
+    print("DATA BASE INITIALIZED")

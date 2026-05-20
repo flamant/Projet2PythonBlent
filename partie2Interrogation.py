@@ -10,6 +10,21 @@ hashed_antoine = hash_password("antoine")
 print("hashed_antoine")
 print(hashed_antoine)
 
+print("Connexion et génération de token JWT (POST /api/users/auth/login).")
+print("connect as (admin@login.fr,admin) (administrator) and generate token.")
+print("---------------------------------------------------------------------")
+req = requests.get("http://127.0.0.1:5000/api/users/auth/login", headers={"id": "admin@login.fr" ,"password": hashed_admin})
+print("request status is "+ str(req.status_code))
+
+token = req.json().get("token")
+print("token is:"+ token)
+
+
+print("get list of users interrogé par un administrateur.")
+print("--------------------------------------------------")
+req = requests.get("http://127.0.0.1:5000/api/users", headers={"token": token})
+print("request status is "+ str(req.status_code))
+
 print("Inscription d'un nouvel utilisateur (POST /api/auth/register).")
 print("--------------------------------------------------------------")
 

@@ -90,3 +90,4 @@ class User(db.Model):
 
 with app.app_context():
     db.create_all() 
+    print("CREATE DATABASE")

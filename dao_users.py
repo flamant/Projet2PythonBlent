@@ -1,3 +1,6 @@
+from models import db
+from sqlalchemy.orm.exc import NoResultFound
+
 def create_user(user):
     if user.__class__.__name__ == 'User':
         if len(user.id) > 0 and len(user.password) > 0:
