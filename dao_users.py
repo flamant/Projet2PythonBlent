@@ -9,10 +9,6 @@ def create_user(user):
                     db.session.query(User).filter_by(id=user.id).one()
                     raise ValueError("L'utilisateur existe déjà en base de donnée.")
                 except NoResultFound as e:
-                    typeDeCompte = 'client' if user.client else 'administrateur'
-                    if user.administrator and user.statut == 'client':
-                        raise ValueError("Un client ne peut pas créer un compte administrateur.")
-                    print("Creation d'un nouveau compte ",typeDeCompte)
                     print("id=",user.id)
                     # Ajouter à la session
                     db.session.add(user)

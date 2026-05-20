@@ -1,5 +1,6 @@
 import os
 import hashlib
+import jwt
 
 
 JWT_SECRET = "d3fb12750c2eff92120742e1b334479e"

@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from models import app, User
 
 users_bp = Blueprint("users", __name__)
-JWT_SECRET = "change-me"  # à mettre dans une variable d'env ensuite
+JWT_SECRET = "d3fb12750c2eff92120742e1b334479e"  # à mettre dans une variable d'env ensuite
 
 @users_bp.route('/')
 def users():
@@ -33,7 +33,7 @@ def register_utilisateur():
     
     if auth:
         user = get_user(id_requester)
-        if (user.administrator or (user.createClient and not createAdministrator)):
+        if (user.administrator or (user.client and createClient)):
             password= hash_password(password)
             create_user(User(id=id, password=password, client=createClient, administrator=createAdministrator))
         else:
@@ -83,11 +83,17 @@ def connection_and_generate_token():
 
 @users_bp.route('', methods=["GET"])
 def getListOfUsers():
+    print("ca passe7")
     token = request.headers.get("token", "0")
     payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
     role = payload.get("role")
+    print("ca passe8")
+    print("decode_token(token)")
+    print(decode_token(token))
     if role == "administrator" and decode_token(token):
+        print("ca passe9")
         get_list_of_users()
+        print("ca passe10")
         return {"message": "Ok !"}, 200
     else:
         return {"error": "Jeton d'accès invalide ou le role qui fait la demande n'est pas administrateur."}, 401     
