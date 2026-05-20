@@ -27,10 +27,10 @@ def register_utilisateur():
     createAdministrator = body.get("administrator")
     id_requester = request.headers.get("id", "0")
     passwordCaller = request.headers.get("password", "0")
-    print("ca passe1")
+    
     auth = authenticate(id_requester, passwordCaller)
     print(auth)
-    print("ca passe2")
+    
     if auth:
         user = get_user(id_requester)
         if (user.administrator or (user.createClient and not createAdministrator)):
@@ -47,9 +47,12 @@ def register_utilisateur():
 def connection_and_generate_token():
     id = request.headers.get("id", "0")
     password = request.headers.get("password", "0")
+    print("ca passe1")
     if authenticate(id, password):
+        print("ca passe2")
         user = get_user(id)
         if user.administrator:
+            print("ca passe3")
             token = jwt.encode(
                 {
                     "exp": datetime.utcnow() + timedelta(hours=1),
@@ -60,6 +63,7 @@ def connection_and_generate_token():
                 algorithm="HS256"
             )
         else:
+            print("ca passe4")
             token = jwt.encode(
             {
                 "exp": datetime.utcnow() + timedelta(hours=1),
@@ -70,8 +74,10 @@ def connection_and_generate_token():
             algorithm="HS256"
             )
         data = {"token": token }
+        print("ca passe5")
         return jsonify(data),200
     else:
+        print("ca passe6")
         return jsonify({"error": "Identifiant/Mot de passe invalides."}), 401
 
 

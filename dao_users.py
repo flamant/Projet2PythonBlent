@@ -1,4 +1,4 @@
-from models import db
+from models import db, User
 from sqlalchemy.orm.exc import NoResultFound
 
 def create_user(user):
