@@ -35,4 +35,5 @@ def get_list_of_users():
     all_users = db.session.query(User).all()
     print("\nTous les utilisateurs:")
     for user in all_users:
-        print(user)   
+        print(user) 
+    return all_users

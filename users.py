@@ -1,3 +1,4 @@
+import json
 from flask import Blueprint, request, jsonify
 from dao_users import create_user, get_user, get_list_of_users
 from metier_users import authenticate
@@ -104,8 +105,12 @@ def getListOfUsers():
     print(decode_token(token))
     if role == "administrator" and decode_token(token):
         print("ca passe9")
-        get_list_of_users()
+        all_users = get_list_of_users()
         print("ca passe10")
-        return {"message": "Ok !"}, 200
+        print(all_users)
+        result = []
+        for user in all_users:
+            result.append(json.dumps(user.to_dict()))
+        return result
     else:
         return {"error": "Jeton d'accès invalide ou le role qui fait la demande n'est pas administrateur."}, 401     

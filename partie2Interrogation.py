@@ -21,9 +21,10 @@ print("le token pour (admin@login.fr/admin) est :"+ token)
 
 
 print("obtenir la liste des utilisateur interrogé par un administrateur.")
-print("--------------------------------------------------")
+print("-----------------------------------------------------------------")
 req = requests.get("http://127.0.0.1:5000/api/users", headers={"token": token})
 print("le statut de la requête est " + str(req.status_code))
+print(req.json())
 
 print("Inscription d'un nouvel utilisateur (POST /api/users/auth/register).")
 print("--------------------------------------------------------------")
@@ -44,3 +45,4 @@ print("consulter avec (admin@login.fr, admin) comme administrateur.")
 print("----------------------------------------------------------")
 req = requests.get("http://127.0.0.1:5000/api/users/flamant@club-internet.fr", headers={"id": "admin@login.fr" ,"password": hashed_admin})
 print("le statut de la requête est " + str(req.status_code))
+print(req.json())

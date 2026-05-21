@@ -84,7 +84,8 @@ class User(db.Model):
     
     def __repr__(self):
         return 'id={0}, password={1}, client={2}, administrator={3}'.format(self.id, self.password, self.client, self.administrator)
-
+    def to_dict(self):        
+        return { "id": self.id, "password": self.password, "client": self.client, "administrator": self.administrator}
 
 
 
