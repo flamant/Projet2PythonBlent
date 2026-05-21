@@ -5,10 +5,12 @@ from utils_encoding import hash_password
 hashed_admin = hash_password("admin")
 print("hashed_admin")
 print(hashed_admin)
+print("  ")
 
 hashed_antoine = hash_password("antoine")
 print("hashed_antoine")
 print(hashed_antoine)
+print("  ")
 
 print("Connexion et génération de token JWT (POST /api/users/auth/login).")
 print("connection avec (admin@login.fr,admin) (administrator) and generer le token.")
@@ -18,14 +20,15 @@ print("le statut de la requête est " + str(req.status_code))
 
 token = req.json().get("token")
 print("le token pour (admin@login.fr/admin) est :"+ token)
-
-
+print("  ")
+print("   ")
 print("obtenir la liste des utilisateur interrogé par un administrateur.")
 print("-----------------------------------------------------------------")
 req = requests.get("http://127.0.0.1:5000/api/users", headers={"token": token})
 print("le statut de la requête est " + str(req.status_code))
 print(req.json())
-
+print("  ")
+print("  ")
 print("Inscription d'un nouvel utilisateur (POST /api/users/auth/register).")
 print("--------------------------------------------------------------")
 print("enregistrer (administrator@admin.fr, secret) comme administrateur.")
@@ -39,6 +42,8 @@ json={
 })
 print("le statut de la requête est " + str(req.status_code))
 
+print("  ")
+print("  ")
 print("Profil d'un  utilisateur (GET /api/users/flamant@club-internet.fr).")
 print("--------------------------------------------------------------")
 print("consulter avec (admin@login.fr, admin) comme administrateur.")

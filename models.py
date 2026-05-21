@@ -32,6 +32,9 @@ class CartItem(db.Model):
     def __repr__(self):
         return f'<CartItem {self.id}, Cart: {self.cart_id} Product: {self.product_id}, Qty: {self.quantity}>'
 
+    def to_dict(self):        
+        return { "id": self.id, "cart_id": self.cart_id, "product_id": self.product_id, "quantity": self.quantity}
+
 
 # Définition des modèles
 class Product(db.Model):
@@ -46,6 +49,10 @@ class Product(db.Model):
     
     def __repr__(self):
         return 'Product id={0}, name={1}, category={2}, description={3}, price={4}, stock={5}'.format(self.id, self.name, self.category, self.description, self.price, self.stock)
+
+
+    def to_dict(self):        
+        return { "id": self.id, "name": self.name, "category": self.category, "description": self.description, "price": self.price, "stock": self.stock}
 
 class Cart(db.Model):
     __tablename__ = 'carts'
@@ -68,6 +75,9 @@ class Cart(db.Model):
         for item in self.items:
             cart_items_output.append('Cart Item, id={0}, product_id={1}, quantity={2}'.format(item.id, item.product_id, item.quantity))
         return 'Cart, id={0}, created_at={1}, user_id={2}, status={3}'.format(self.id, self.created_at, self.user_id, self.status) + '\nCart Item' + ',\n'.join(map(str,cart_items_output))
+
+    def to_dict(self):        
+        return { "id": self.id, "created_at": self.created_at, "user_id": self.user_id, "status": self.status}
 
 
 #Cart.__table__.drop(engine)

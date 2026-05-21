@@ -103,14 +103,19 @@ def getListOfUsers():
     print("ca passe8")
     print("decode_token(token)")
     print(decode_token(token))
-    if role == "administrator" and decode_token(token):
-        print("ca passe9")
-        all_users = get_list_of_users()
-        print("ca passe10")
-        print(all_users)
-        result = []
-        for user in all_users:
-            result.append(json.dumps(user.to_dict()))
-        return result
-    else:
-        return {"error": "Jeton d'accès invalide ou le role qui fait la demande n'est pas administrateur."}, 401     
+    try:
+        if role == "administrator" and decode_token(token):
+            print("ca passe9")
+            all_users = get_list_of_users()
+            print("ca passe10")
+            print(all_users)
+            result = []
+            for user in all_users:
+                result.append(json.dumps(user.to_dict()))
+            return result
+        else:
+            return {"error": "Jeton d'accès invalide ou le role qui fait la demande n'est pas administrateur."}, 401
+    except jwt.ExpiredSignatureError:
+        return jsonify({"error": "Token expiré."}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({"error": "Token invalide."}), 401
