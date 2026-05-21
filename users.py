@@ -13,9 +13,21 @@ JWT_SECRET = "d3fb12750c2eff92120742e1b334479e"  # à mettre dans une variable d
 def users():
     return 'Liste des utilisateurs'
 
-@users_bp.route('/<username>')
+@users_bp.route('/<username>', methods=["GET"])
 def user_profile(username):
-    return f'Profil de {username}'
+    id_requester = request.headers.get("id", "0")
+    passwordCaller = request.headers.get("password", "0")
+    auth = authenticate(id_requester, passwordCaller)
+    print(auth)
+    
+    if auth:
+        user = get_user(username)
+        data = {"id": user.id, "password":user.password, "client":user.client, "administrator":user.administrator }
+        print("ca passe11")
+        return jsonify(data),200
+    else:
+        raise ValueError("The caller is not allowed to display the account information")
+
 
 
 @users_bp.route('/auth/register', methods=["POST"])
