@@ -9,7 +9,6 @@ def create_user(user):
                     db.session.query(User).filter_by(id=user.id).one()
                     raise ValueError("L'utilisateur existe déjà en base de donnée.")
                 except NoResultFound as e:
-                    print("id=",user.id)
                     # Ajouter à la session
                     db.session.add(user)
                     db.session.commit()
@@ -33,7 +32,6 @@ def get_user(id):
 def get_list_of_users():
     # Récupérer tous les utilisateur
     all_users = db.session.query(User).all()
-    print("\nTous les utilisateurs:")
     for user in all_users:
         print(user) 
     return all_users

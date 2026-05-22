@@ -7,12 +7,6 @@ hashed_admin = hash_password("admin")
 hashed_antoine = hash_password("antoine")
 
 
-print("hashed_admin")
-print(hashed_admin)
-
-print("hashed_antoine")
-print(hashed_antoine)
-
 
 def add_sample_products_and_add_admin_and_client():
     # Créer quelques produits
