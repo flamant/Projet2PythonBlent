@@ -1,2 +1,2 @@
-chmod +x run_scripts.sh
-./run_scripts.sh
+chmod +x install_libraries.sh
+./install_libraries.sh

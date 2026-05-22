@@ -1,0 +1,13 @@
+#!/bin/bash
+
+python -m venv mon_env
+source mon_env/bin/activate
+
+pip install flask requests
+
+pip install flask_sqlalchemy
+pip install sqlalchemy
+pip install pyjwt
+pip install PyJWT
+pip install requests
+pip3 install cryptography
