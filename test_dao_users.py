@@ -3,7 +3,7 @@ import pytest
 from dao_users import create_user
 
 
-def create_user(user):
+""" ef create_user(user):
     if user.__class__.__name__ == 'User':
         if len(user.id) > 0 and len(user.password) > 0:
             if (user.client and not user.administrator) or (user.administrator and not user.client):
@@ -19,7 +19,7 @@ def create_user(user):
         else:
             raise ValueError("L'identifiant et le mot de passe doivent être renseigné.")
     else:
-        raise ValueError("L'utilisateur n'est pas valide.")
+        raise ValueError("L'utilisateur n'est pas valide.") """
 
 def test_not_user():
     with pytest.raises(ValueError("L'utilisateur n'est pas valide.")):
@@ -50,6 +50,22 @@ def test_client_or_administrator(x, y, expectation):
     with expectation:
         create_user(User(id="admin",password="password",client=x,administrator=y))
 
-def test_user_is_created():
-    create_user(User(id="",password=y,client=True,administrator=False))
-    assert calc.add(2, 3) == 5
+
+def create_user_works():
+        create_user(User(id="new1",password="password1",client=True,administrator=False))
+
+
+
+@pytest.mark.parametrize(
+    ["x", "y", "expectation"],
+    [
+        (True,  False, raises(ValueError("L'utilisateur existe déjà en base de donnée."))),
+        
+    ],
+)
+def test_user_already_exists_in_data_base(x, y, expectation):
+    with expectation:
+        user = User("admin", "password", True, False)
+        db.session.merge(user)
+        db.session.commit()
+        create_user(User(id="admin",password="password",client=x,administrator=y))
