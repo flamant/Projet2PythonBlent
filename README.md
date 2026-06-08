@@ -20,7 +20,7 @@ Une erreur d’import bloquait le démarrage de l’application (`ImportError: c
 
 Pour tester `dao_users.py`, les fonctions (`create_user`, `get_user`, etc.) passent par SQLAlchemy et une vraie base. Il ne suffit pas de mocker à la main : il faut une base utilisable pendant les tests, sans alourdir le projet (pas de serveur PostgreSQL, pas de Docker, pas de duplication lourde de toute l’application).
 
-#### Solution retenue : SQLite en mémoire + fixture pytest
+#### SQLite en mémoire + fixture pytest
 
 L’application utilise déjà SQLite (`basic_store.db` dans `instance/`). Pour les tests, on utilise une **base SQLite en mémoire** (`sqlite:///:memory:`) :
 
