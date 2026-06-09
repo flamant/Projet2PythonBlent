@@ -29,8 +29,8 @@ def test_not_user():
 @pytest.mark.parametrize(
     ["x", "y", "expectation"],
     [
-        ("",  "2", raises(ValueError("L'identifiant et le mot de passe doivent être renseigné."))),
-        ("r", "", raises(ValueError("L'identifiant et le mot de passe doivent être renseigné.")))
+        ("",  "2", pytest.raises(ValueError)),
+        ("r", "", pytest.raises(ValueError("L'identifiant et le mot de passe doivent être renseigné.")))
         
     ],
 )

@@ -11,3 +11,4 @@ pip install pyjwt
 pip install PyJWT
 pip install requests
 pip3 install cryptography
+pip install -U pytest
