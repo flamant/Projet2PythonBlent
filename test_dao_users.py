@@ -2,6 +2,7 @@ import pytest
 
 from dao_users import create_user, get_user, get_list_of_users
 from models import CartItem, User
+from metier_users import authenticate
 
 
 def test_not_user():
@@ -38,6 +39,8 @@ def test_client_or_administrator(client, administrator):
             User(
                 id="admin",
                 password="password",
+                firstName="firstName",
+                lastName="lastName",
                 client=client,
                 administrator=administrator,
             )
@@ -48,6 +51,8 @@ def test_user_is_created(db_session):
     user = User(
         id="test@mail.fr",
         password="secret",
+        firstName="firstName",
+        lastName="lastName",
         client=True,
         administrator=False,
     )
@@ -55,6 +60,9 @@ def test_user_is_created(db_session):
 
     found = db_session.session.query(User).filter_by(id="test@mail.fr").one()
     assert found.id == "test@mail.fr"
+    assert found.password == "secret"
+    assert found.firstName == "firstName"
+    assert found.lastName == "lastName"
     assert found.client is True
     assert found.administrator is False
 
@@ -63,6 +71,8 @@ def test_user_already_exists(db_session):
     user = User(
         id="dup@mail.fr",
         password="secret",
+        firstName="firstName",
+        lastName="lastName",
         client=True,
         administrator=False,
     )
@@ -73,6 +83,8 @@ def test_user_already_exists(db_session):
             User(
                 id="dup@mail.fr",
                 password="other",
+                firstName="firstName",
+                lastName="lastName",
                 client=True,
                 administrator=False,
             )
@@ -83,6 +95,8 @@ def test_get_user(db_session):
     user = User(
         id="get@mail.fr",
         password="secret",
+        firstName="firstName",
+        lastName="lastName",
         client=False,
         administrator=True,
     )
@@ -101,12 +115,16 @@ def test_get_all_user(db_session):
     user = User(
         id="get@mail.fr",
         password="secret",
+        firstName="firstName",
+        lastName="lastName",
         client=False,
         administrator=True,
     )
     user1 = User(
         id="get1@mail.fr",
         password="secret1",
+        firstName="firstName1",
+        lastName="lastName1",
         client=True,
         administrator=False,
     )
@@ -118,10 +136,32 @@ def test_get_all_user(db_session):
     founds = [op for op in founds]
     assert founds[0].id == "get@mail.fr"
     assert founds[0].password == "secret"
+    assert founds[0].firstName == "firstName"
+    assert founds[0].lastName == "lastName"
     assert founds[0].client == False
     assert founds[0].administrator == True
 
     assert founds[1].id == "get1@mail.fr"
     assert founds[1].password == "secret1"
+    assert founds[1].firstName == "firstName1"
+    assert founds[1].lastName == "lastName1"
     assert founds[1].client == True
     assert founds[1].administrator == False
+
+
+def test_authenticate_no_result_found(db_session):
+    result = authenticate("unknownId", "unknownedPassword")
+    assert result == False
+
+def test_authenticate_result_found(db_session):
+    user = User(
+        id="get@mail.fr",
+        password="secret",
+        firstName="firstName",
+        lastName="lastName",
+        client=False,
+        administrator=True,
+    )
+    create_user(user)
+    result = authenticate("get@mail.fr", "secret")
+    assert result == True
