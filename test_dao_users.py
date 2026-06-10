@@ -1,71 +1,127 @@
 import pytest
 
-from dao_users import create_user
+from dao_users import create_user, get_user, get_list_of_users
+from models import CartItem, User
 
-
-""" ef create_user(user):
-    if user.__class__.__name__ == 'User':
-        if len(user.id) > 0 and len(user.password) > 0:
-            if (user.client and not user.administrator) or (user.administrator and not user.client):
-                try:
-                    db.session.query(User).filter_by(id=user.id).one()
-                    raise ValueError("L'utilisateur existe déjà en base de donnée.")
-                except NoResultFound as e:
-                    # Ajouter à la session
-                    db.session.add(user)
-                    db.session.commit()
-            else:
-                raise ValueError("Soit l'utilisateur est client, soit il est administrateur.")
-        else:
-            raise ValueError("L'identifiant et le mot de passe doivent être renseigné.")
-    else:
-        raise ValueError("L'utilisateur n'est pas valide.") """
 
 def test_not_user():
-    with pytest.raises(ValueError("L'utilisateur n'est pas valide.")):
-        create_user(CartItem(id=1,cart_id=1,product_id=1,quantity=2))
+    with pytest.raises(ValueError, match="L'utilisateur n'est pas valide."):
+        create_user(CartItem(id=1, cart_id=1, product_id=1, quantity=2))
 
 
 @pytest.mark.parametrize(
-    ["x", "y", "expectation"],
+    "x, y",
     [
-        ("",  "2", pytest.raises(ValueError)),
-        ("r", "", pytest.raises(ValueError("L'identifiant et le mot de passe doivent être renseigné.")))
-        
+        ("", "2"),
+        ("r", ""),
     ],
 )
-def test_identifiant_not_provided(x, y, expectation):
-    with expectation:
-        create_user(User(id=x,password=y,client=True,administrator=False))
-
-@pytest.mark.parametrize(
-    ["x", "y", "expectation"],
-    [
-        (False,  False, raises(ValueError("Soit l'utilisateur est client, soit il est administrateur."))),
-        (True, True, raises(ValueError("Soit l'utilisateur est client, soit il est administrateur.")))
-        
-    ],
-)
-def test_client_or_administrator(x, y, expectation):
-    with expectation:
-        create_user(User(id="admin",password="password",client=x,administrator=y))
-
-
-def create_user_works():
-        create_user(User(id="new1",password="password1",client=True,administrator=False))
-
+def test_identifiant_not_provided(x, y):
+    with pytest.raises(
+        ValueError, match="L'identifiant et le mot de passe doivent être renseigné."
+    ):
+        create_user(User(id=x, password=y, client=True, administrator=False))
 
 
 @pytest.mark.parametrize(
-    ["x", "y", "expectation"],
+    "client, administrator",
     [
-        (True,  False, raises(ValueError("L'utilisateur existe déjà en base de donnée."))),
-        
+        (False, False),
+        (True, True),
     ],
 )
-def test_user_already_exists_in_data_base(x, y, expectation):
-    with expectation:
-        user = User("admin", "password", True, False)
-        db.session.merge(user)
-        db.session.commit()
-        create_user(User(id="admin",password="password",client=x,administrator=y))
+def test_client_or_administrator(client, administrator):
+    with pytest.raises(
+        ValueError, match="Soit l'utilisateur est client, soit il est administrateur."
+    ):
+        create_user(
+            User(
+                id="admin",
+                password="password",
+                client=client,
+                administrator=administrator,
+            )
+        )
+
+
+def test_user_is_created(db_session):
+    user = User(
+        id="test@mail.fr",
+        password="secret",
+        client=True,
+        administrator=False,
+    )
+    create_user(user)
+
+    found = db_session.session.query(User).filter_by(id="test@mail.fr").one()
+    assert found.id == "test@mail.fr"
+    assert found.client is True
+    assert found.administrator is False
+
+
+def test_user_already_exists(db_session):
+    user = User(
+        id="dup@mail.fr",
+        password="secret",
+        client=True,
+        administrator=False,
+    )
+    create_user(user)
+
+    with pytest.raises(ValueError, match="L'utilisateur existe déjà en base de donnée."):
+        create_user(
+            User(
+                id="dup@mail.fr",
+                password="other",
+                client=True,
+                administrator=False,
+            )
+        )
+
+
+def test_get_user(db_session):
+    user = User(
+        id="get@mail.fr",
+        password="secret",
+        client=False,
+        administrator=True,
+    )
+    create_user(user)
+
+    found = get_user("get@mail.fr")
+    assert found.id == "get@mail.fr"
+    assert found.administrator is True
+
+
+def test_get_user_not_found(db_session):
+    with pytest.raises(ValueError, match="L'utilisateur n'est pas enregistré en base."):
+        get_user("inconnu@mail.fr")
+
+def test_get_all_user(db_session):
+    user = User(
+        id="get@mail.fr",
+        password="secret",
+        client=False,
+        administrator=True,
+    )
+    user1 = User(
+        id="get1@mail.fr",
+        password="secret1",
+        client=True,
+        administrator=False,
+    )
+    create_user(user)
+    create_user(user1)
+
+    founds = get_list_of_users()
+    assert len(founds) == 2
+    founds = [op for op in founds]
+    assert founds[0].id == "get@mail.fr"
+    assert founds[0].password == "secret"
+    assert founds[0].client == False
+    assert founds[0].administrator == True
+
+    assert founds[1].id == "get1@mail.fr"
+    assert founds[1].password == "secret1"
+    assert founds[1].client == True
+    assert founds[1].administrator == False
