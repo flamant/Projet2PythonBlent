@@ -41,7 +41,7 @@ def register_utilisateur():
     
     auth = authenticate(id_requester, passwordCaller)
     # si l'appelant existe en base de donnée
-    if auth:
+    if (auth and createAdministrator) or createClient:
         user = get_user(id_requester)
         if (user.administrator or (user.client and createClient)):
             password= hash_password(password)
