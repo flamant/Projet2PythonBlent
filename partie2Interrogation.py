@@ -15,7 +15,7 @@ print("  ")
 print("Connexion et génération de token JWT (POST /api/users/auth/login).")
 print("connection avec (admin@login.fr,admin) (administrator) and generer le token.")
 print("---------------------------------------------------------------------")
-req = requests.get("http://127.0.0.1:5000/api/users/auth/login", headers={"id": "admin@login.fr" ,"password": hashed_admin})
+req = requests.post("http://127.0.0.1:5000/api/users/auth/login", headers={"id": "admin@login.fr" ,"password": hashed_admin})
 print("le statut de la requête est " + str(req.status_code))
 
 token = req.json().get("token")

@@ -87,15 +87,17 @@ class User(db.Model):
     
     id = db.Column(db.String(100), primary_key=True)
     password = db.Column(db.String(500), nullable=False)
+    firstName = db.Column(db.String(500), nullable=False)
+    lastName = db.Column(db.String(500), nullable=False)
     client = db.Column(db.Boolean, unique=False, default=False)
     administrator = db.Column(db.Boolean, unique=False, default=False)
 
 
     
     def __repr__(self):
-        return 'id={0}, password={1}, client={2}, administrator={3}'.format(self.id, self.password, self.client, self.administrator)
+        return 'id={0}, password={1}, firstName={2}, lastName={3}, client={4}, administrator={5}'.format(self.id, self.password, self.firstName, self.lastName, self.client, self.administrator)
     def to_dict(self):        
-        return { "id": self.id, "password": self.password, "client": self.client, "administrator": self.administrator}
+        return { "id": self.id, "password": self.password, "firstName": self.firstName, "lastName": self.lastName, "client": self.client, "administrator": self.administrator}
 
 
 

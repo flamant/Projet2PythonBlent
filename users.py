@@ -22,7 +22,7 @@ def user_profile(username):
     # si l'utilisateur passé dans le header existe bien en base   
     if auth:
         user = get_user(username)
-        data = {"id": user.id, "password":user.password, "client":user.client, "administrator":user.administrator }
+        data = {"id": user.id, "password":user.password, "firstName":user.firstName, "lastName":user.lastName, "client":user.client, "administrator":user.administrator }
         return jsonify(data),200
     else:
         raise ValueError("L'appelant n'existe pas en base de donnée ou le mot de passe est incorrect")
@@ -45,7 +45,7 @@ def register_utilisateur():
         user = get_user(id_requester)
         if (user.administrator or (user.client and createClient)):
             password= hash_password(password)
-            create_user(User(id=id, password=password, client=createClient, administrator=createAdministrator))
+            create_user(User(id=id, password=password, firstName=user.firstName, lastName=user.lastName, client=createClient, administrator=createAdministrator))
         else:
             raise ValueError("L'utilisateur n'a pas le droit de créer un tel compte")
     else:
@@ -53,7 +53,7 @@ def register_utilisateur():
     return jsonify({"message": f"Compte cree pour id={id}"}), 201
 
 
-@users_bp.route('/auth/login', methods=["GET"])
+@users_bp.route('/auth/login', methods=["POST"])
 def connection_and_generate_token():
     id = request.headers.get("id", "0")
     password = request.headers.get("password", "0")
