@@ -1,24 +1,22 @@
 from flask import Blueprint
+from dao_products import read_products, read_specific_product, create_product, update_product, delete_product
 
 products_bp = Blueprint('products', __name__)
 
-@products_bp.route('/')
-def products():
-    return 'Liste des produits'
 
-@products_bp.route('/<product_id>')
-def product_detail(product_id):
-    return f'Détail du produit {product_id}'
-
-@products_bp.route('/api/produits', methods=["GET"])
+@products_bp.route('', methods=["GET"])
 def getProductList():
     token = request.headers.get("token", "0")
     if decode_token(token):
-        read_products()
+        all_products = read_products()
+        result = []
+        for product in all_products:
+            result.append(json.dumps(product.to_dict()))
+        return result
         return {"message": "Ok !"}, 200
     return {"error": "Jeton d'accès invalide."}, 401
 
-@products_bp.route('/api/produits/<id>', methods=["GET"])
+@products_bp.route('/<id>', methods=["GET"])
 def getSpecificProduct(id):
     token = request.headers.get("token", "0")
     if decode_token(token):
@@ -27,7 +25,7 @@ def getSpecificProduct(id):
     return {"error": "Jeton d'accès invalide."}, 401
 
 
-@products_bp.route('/api/produits', methods=["POST"])
+@products_bp.route('', methods=["POST"])
 def createNewProduct():
     token = request.headers.get("token", "0")
     body = request.get_json()
@@ -44,7 +42,7 @@ def createNewProduct():
     return {"error": "seul un administrateur a le droit de créer un produit et l'utilisateur doit être correctement authentifié."}, 401
 
 
-@products_bp.route('/api/produits/<id>', methods=["PUT"])
+@products_bp.route('/<id>', methods=["PUT"])
 def modifyProduct(id):
     token = request.headers.get("token", "0")
     body = request.get_json()
@@ -59,7 +57,7 @@ def modifyProduct(id):
         return {"message": "Ok !"}, 200
     return {"error": "seul un administrateur a le droit de créer un produit et l'utilisateur doit être correctement authentifié."}, 401
 
-@products_bp.route('/api/produits/<id>', methods=["DELETE"])
+@products_bp.route('/<id>', methods=["DELETE"])
 def deleteProduct(id):
     token = request.headers.get("token", "0")
     payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
