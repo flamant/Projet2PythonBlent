@@ -1,3 +1,5 @@
+from models import db, Product
+
 def read_products():
     # Récupérer tous les produits
     all_products = db.session.query(Product).all()
