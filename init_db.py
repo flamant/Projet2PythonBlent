@@ -25,8 +25,8 @@ def add_sample_products_and_add_admin_and_client():
     print("Produits ajoutés avec succès!")
 
     users = [
-        User(id='admin@login.fr', password=hashed_admin, client=False, administrator=True),
-        User(id='flamant@club-internet.fr', password=hashed_antoine, client=True, administrator=False)
+        User(id='admin@login.fr', password=hashed_admin, firstName="firstName1", lastName="lastName1", client=False, administrator=True),
+        User(id='flamant@club-internet.fr', password=hashed_antoine, firstName="xavier", lastName="flamant",client=True, administrator=False)
     ]
 
         # Merge évite les doublons si le script est relancé

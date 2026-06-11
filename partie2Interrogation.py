@@ -12,10 +12,10 @@ print("hashed_antoine")
 print(hashed_antoine)
 print("  ")
 
-print("Connexion et génération de token JWT (POST /api/users/auth/login).")
+print("Connexion et génération de token JWT (POST /api/auth/login).")
 print("connection avec (admin@login.fr,admin) (administrator) and generer le token.")
 print("---------------------------------------------------------------------")
-req = requests.post("http://127.0.0.1:5000/api/users/auth/login", headers={"id": "admin@login.fr" ,"password": hashed_admin})
+req = requests.post("http://127.0.0.1:5000/api/auth/login", headers={"id": "admin@login.fr" ,"password": hashed_admin})
 print("le statut de la requête est " + str(req.status_code))
 
 token = req.json().get("token")
@@ -29,11 +29,11 @@ print("le statut de la requête est " + str(req.status_code))
 print(req.json())
 print("  ")
 print("  ")
-print("Inscription d'un nouvel utilisateur (POST /api/users/auth/register).")
+print("Inscription d'un nouvel utilisateur (POST /api/auth/register).")
 print("--------------------------------------------------------------")
 print("enregistrer (administrator@admin.fr, secret) comme administrateur.")
 print("----------------------------------------------------------")
-req = requests.post("http://127.0.0.1:5000/api/users/auth/register", headers={"id": "admin@login.fr" ,"password": hashed_admin}, 
+req = requests.post("http://127.0.0.1:5000/api/auth/register", headers={"id": "admin@login.fr" ,"password": hashed_admin}, 
 json={
     'id': "administrator@admin.fr",
     'password': "secret",

@@ -10,11 +10,8 @@ from models import app, User
 users_bp = Blueprint("users", __name__)
 JWT_SECRET = "d3fb12750c2eff92120742e1b334479e"  # à mettre dans une variable d'env ensuite
 
-@users_bp.route('/')
-def users():
-    return 'Liste des utilisateurs'
 
-@users_bp.route('/<username>', methods=["GET"])
+@users_bp.route('/users/<username>', methods=["GET"])
 def user_profile(username):
     id_requester = request.headers.get("id", "0")
     passwordCaller = request.headers.get("password", "0")
@@ -86,7 +83,7 @@ def connection_and_generate_token():
         return jsonify({"error": "Identifiant/Mot de passe invalides."}), 401
 
 
-@users_bp.route('', methods=["GET"])
+@users_bp.route('/users', methods=["GET"])
 def getListOfUsers():
     token = request.headers.get("token", "0")
     payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
