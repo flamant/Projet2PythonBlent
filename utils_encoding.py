@@ -3,12 +3,11 @@ import hashlib
 import jwt
 
 
-JWT_SECRET = "d3fb12750c2eff92120742e1b334479e"
 
 def decode_token(token):
     return jwt.decode(
         token,
-        JWT_SECRET,
+        os.getenv("JWT_SECRET"),
         algorithms="HS256"
     )
 

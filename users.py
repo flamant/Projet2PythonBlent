@@ -6,15 +6,27 @@ from utils_encoding import decode_token, hash_password
 import jwt
 from datetime import datetime, timedelta
 from models import app, User
+from werkzeug.security import generate_password_hash, check_password_hash
 
 users_bp = Blueprint("users", __name__)
-JWT_SECRET = "d3fb12750c2eff92120742e1b334479e"  # à mettre dans une variable d'env ensuite
+
+hashed_admin = generate_password_hash("admin")
+print("hashed_admin")
+print(hashed_admin)
+print("  ")
+
+hashed_antoine = generate_password_hash("antoine")
+print("hashed_antoine")
+print(hashed_antoine)
+print("  ")
 
 
 @users_bp.route('/users/<username>', methods=["GET"])
 def user_profile(username):
-    id_requester = request.headers.get("id", "0")
-    passwordCaller = request.headers.get("password", "0")
+    body = request.get_json()
+    id_requester = username
+    passwordCaller = body.get("password_caller", "0")
+    auth = check_password_hash(passwordCaller, "admin") 
     auth = authenticate(id_requester, passwordCaller) 
     # si l'utilisateur passé dans le header existe bien en base   
     if auth:
@@ -33,8 +45,8 @@ def register_utilisateur():
     password = body.get("password")
     createClient = body.get("client")
     createAdministrator = body.get("administrator")
-    id_requester = request.headers.get("id", "0")
-    passwordCaller = request.headers.get("password", "0")
+    id_requester = body.get("id_caller", "0")
+    passwordCaller = body.get("password_caller", "0")
     
     auth = authenticate(id_requester, passwordCaller)
     # si l'appelant existe en base de donnée
@@ -52,8 +64,9 @@ def register_utilisateur():
 
 @users_bp.route('/auth/login', methods=["POST"])
 def connection_and_generate_token():
-    id = request.headers.get("id", "0")
-    password = request.headers.get("password", "0")
+    body = request.get_json()
+    id = body.get("id_caller", "0")
+    password = body.get("password_caller", "0")
     if authenticate(id, password):
         user = get_user(id)
         if user.administrator:
@@ -63,7 +76,7 @@ def connection_and_generate_token():
                     "user": id,
                     "role": "administrator"
                 },
-                JWT_SECRET,
+                os.getenv("JWT_SECRET"),
                 algorithm="HS256"
             )
         else:
@@ -74,7 +87,7 @@ def connection_and_generate_token():
                 "user": id,
                 "role": "client"
             },
-            JWT_SECRET,
+            os.getenv("JWT_SECRET"),
             algorithm="HS256"
             )
         data = {"token": token }
@@ -86,7 +99,7 @@ def connection_and_generate_token():
 @users_bp.route('/users', methods=["GET"])
 def getListOfUsers():
     token = request.headers.get("token", "0")
-    payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+    payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
     role = payload.get("role")
     try:
         if role == "administrator" and decode_token(token):

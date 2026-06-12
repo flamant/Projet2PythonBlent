@@ -11,4 +11,6 @@ pip install pyjwt
 pip install PyJWT
 pip install requests
 pip3 install cryptography
+pip install python-dotenv
+python -m pip install python-dotenv
 pip install -U pytest

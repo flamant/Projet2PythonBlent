@@ -4,8 +4,8 @@ def read_products():
     # Récupérer tous les produits
     all_products = db.session.query(Product).all()
     # Ajouter à la session
-    db.session.add_all(all_products)
-    db.session.commit()
+    #db.session.add_all(all_products)
+    #db.session.commit()
     print("\nTous les produits:")
     for product in all_products:
         print(product)
@@ -16,10 +16,11 @@ def read_specific_product(product_id):
     # Récupérer un produit spécifique
     specific_product = db.session.query(Product).filter_by(id=product_id).first()
     # Ajouter à la session
-    db.session.add(specific_product)
-    db.session.commit()
+    #db.session.add(specific_product)
+    #db.session.commit()
     print("\nProduit spécifique:")
     print(specific_product)
+    return specific_product
     
 def create_product(product):
     if product.__class__.__name__ == 'Product':

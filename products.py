@@ -3,6 +3,12 @@ from dao_products import read_products, read_specific_product, create_product, u
 from utils_encoding import decode_token
 import json
 from models import Product
+# importing os module for environment variables
+import os
+# importing necessary functions from dotenv library
+from dotenv import load_dotenv, dotenv_values 
+# loading variables from .env file
+load_dotenv() 
 
 products_bp = Blueprint('products', __name__)
 
@@ -25,8 +31,9 @@ def getProductList():
 def getSpecificProduct(id):
     token = request.headers.get("token", "0")
     if decode_token(token):
-        read_specific_product(id)
-        return {"message": "Ok !"}, 200
+        product = read_specific_product(id)
+        result = json.dumps(product.to_dict())
+        return result
     return {"error": "Jeton d'accès invalide."}, 401
 
 
@@ -39,7 +46,7 @@ def createNewProduct():
     description = body.get("description")
     price = body.get("price")
     stock = body.get("stock")
-    payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+    payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
     role = payload.get("role")
     if role == "administrateur" and (token):
         create_product(Product(id=id, name=name, description=description, price=price, stock=stock))
@@ -55,7 +62,7 @@ def modifyProduct(id):
     description = body.get("description")
     price = body.get("price")
     stock = body.get("stock")
-    payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+    payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
     role = payload.get("role")
     if role == "administrateur" and decode_token(token):
         update_product(Product(id=id, name=name, description=description, price=price, stock=stock))
@@ -65,7 +72,7 @@ def modifyProduct(id):
 @products_bp.route('/<id>', methods=["DELETE"])
 def deleteProduct(id):
     token = request.headers.get("token", "0")
-    payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+    payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
     role = payload.get("role")
     if role == "administrateur" and decode_token(token):
         delete_product(id)
