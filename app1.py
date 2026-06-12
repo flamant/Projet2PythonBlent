@@ -8,9 +8,7 @@ from products import products_bp
 app.register_blueprint(users_bp, url_prefix="/api")
 app.register_blueprint(products_bp, url_prefix="/api/products")
 
-@app.route("/")
-def home():
-    return "Accueil"
+
 
 
 if __name__ == "__main__":

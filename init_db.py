@@ -2,9 +2,10 @@ from utils_encoding import hash_password
 from models import db, app
 import models
 from models import User, Product
+from werkzeug.security import generate_password_hash, check_password_hash
 
-hashed_admin = hash_password("admin")
-hashed_antoine = hash_password("antoine")
+hashed_admin = generate_password_hash("admin")
+hashed_antoine = generate_password_hash("antoine")
 
 
 

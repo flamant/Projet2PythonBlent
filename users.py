@@ -7,6 +7,7 @@ import jwt
 from datetime import datetime, timedelta
 from models import app, User
 from werkzeug.security import generate_password_hash, check_password_hash
+import os
 
 users_bp = Blueprint("users", __name__)
 
@@ -64,12 +65,19 @@ def register_utilisateur():
 
 @users_bp.route('/auth/login', methods=["POST"])
 def connection_and_generate_token():
+    print('ca passe1')
     body = request.get_json()
     id = body.get("id_caller", "0")
     password = body.get("password_caller", "0")
+    print('ca passe2 before authenticate')
     if authenticate(id, password):
+        print('ca passe3')
         user = get_user(id)
+        print("user")
+        print(user)
+        
         if user.administrator:
+            print('ca passe4')
             token = jwt.encode(
                 {
                     "exp": datetime.utcnow() + timedelta(hours=1),
@@ -80,19 +88,20 @@ def connection_and_generate_token():
                 algorithm="HS256"
             )
         else:
-            print("ca passe4")
+            print("ca passe5")
             token = jwt.encode(
-            {
-                "exp": datetime.utcnow() + timedelta(hours=1),
-                "user": id,
-                "role": "client"
-            },
-            os.getenv("JWT_SECRET"),
-            algorithm="HS256"
-            )
+                {
+                    "exp": datetime.utcnow() + timedelta(hours=1),
+                    "user": id,
+                    "role": "client"
+                },
+                os.getenv("JWT_SECRET"),
+                algorithm="HS256"
+                )
         data = {"token": token }
         return jsonify(data),200
     else:
+        print("ca passe6")
         return jsonify({"error": "Identifiant/Mot de passe invalides."}), 401
 
 
