@@ -32,6 +32,8 @@ def add_sample_products_and_add_admin_and_client():
 
         # Merge évite les doublons si le script est relancé
     for user in users:
+        print("user")
+        print(user)
         db.session.merge(user)
     
     # Commit pour sauvegarder les changements dans la base de données
