@@ -5,7 +5,7 @@ from metier_users import authenticate
 from utils_encoding import decode_token, hash_password
 import jwt
 from datetime import datetime, timedelta
-from models import app, User
+from models import db, app, User
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 
@@ -24,18 +24,17 @@ print("  ")
 
 @users_bp.route('/users/<username>', methods=["GET"])
 def user_profile(username):
-    body = request.get_json()
     id_requester = username
-    passwordCaller = body.get("password_caller", "0")
-    auth = check_password_hash(passwordCaller, "admin") 
-    auth = authenticate(id_requester, passwordCaller) 
+    user = get_user(id_requester)
+    token = request.headers.get("token", "0")
+    if decode_token(token):
+    #auth = authenticate(id_requester, passwordCaller) 
     # si l'utilisateur passé dans le header existe bien en base   
-    if auth:
         user = get_user(username)
         data = {"id": user.id, "password":user.password, "firstName":user.firstName, "lastName":user.lastName, "client":user.client, "administrator":user.administrator }
         return jsonify(data),200
     else:
-        raise ValueError("L'appelant n'existe pas en base de donnée ou le mot de passe est incorrect")
+        raise ValueError("L'appelant n'est pas correctement authentifié")
 
 
 
@@ -44,18 +43,22 @@ def register_utilisateur():
     body = request.get_json()
     id = body.get("id", "")
     password = body.get("password")
+    firstName = body.get("firstName")
+    lastName = body.get("lastName")
     createClient = body.get("client")
     createAdministrator = body.get("administrator")
     id_requester = body.get("id_caller", "0")
     passwordCaller = body.get("password_caller", "0")
     
-    auth = authenticate(id_requester, passwordCaller)
+    #auth = authenticate(id_requester, passwordCaller)
+    user = get_user(id_requester)
+    pwhash = user.password
+    #if check_password_hash(pwhash, password):
     # si l'appelant existe en base de donnée
-    if (auth and createAdministrator) or createClient:
-        user = get_user(id_requester)
+    if (check_password_hash(pwhash, passwordCaller) and createAdministrator) or createClient:
         if (user.administrator or (user.client and createClient)):
-            password= hash_password(password)
-            create_user(User(id=id, password=password, firstName=user.firstName, lastName=user.lastName, client=createClient, administrator=createAdministrator))
+            password= generate_password_hash(password)
+            create_user(User(id=id, password=password, firstName=firstName, lastName=lastName, client=createClient, administrator=createAdministrator))
         else:
             raise ValueError("L'utilisateur n'a pas le droit de créer un tel compte")
     else:
@@ -65,19 +68,17 @@ def register_utilisateur():
 
 @users_bp.route('/auth/login', methods=["POST"])
 def connection_and_generate_token():
-    print('ca passe1')
     body = request.get_json()
     id = body.get("id_caller", "0")
     password = body.get("password_caller", "0")
-    print('ca passe2 before authenticate')
-    if authenticate(id, password):
-        print('ca passe3')
-        user = get_user(id)
+    #if authenticate(id, password):
+    user = get_user(id)
+    pwhash = user.password
+    if check_password_hash(pwhash, password):
         print("user")
         print(user)
         
         if user.administrator:
-            print('ca passe4')
             token = jwt.encode(
                 {
                     "exp": datetime.utcnow() + timedelta(hours=1),
@@ -88,7 +89,6 @@ def connection_and_generate_token():
                 algorithm="HS256"
             )
         else:
-            print("ca passe5")
             token = jwt.encode(
                 {
                     "exp": datetime.utcnow() + timedelta(hours=1),
@@ -101,7 +101,6 @@ def connection_and_generate_token():
         data = {"token": token }
         return jsonify(data),200
     else:
-        print("ca passe6")
         return jsonify({"error": "Identifiant/Mot de passe invalides."}), 401
 
 

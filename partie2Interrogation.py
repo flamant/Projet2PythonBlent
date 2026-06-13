@@ -19,7 +19,7 @@ print("---------------------------------------------------------------------")
 req = requests.post("http://127.0.0.1:5000/api/auth/login",
 json={
     "id_caller": "admin@login.fr",
-    "password_caller": hashed_admin
+    "password_caller": "admin"
 })
 print("le statut de la requête est " + str(req.status_code))
 token = req.json().get("token")
@@ -40,9 +40,11 @@ print("----------------------------------------------------------")
 req = requests.post("http://127.0.0.1:5000/api/auth/register", 
 json={
     'id_caller': "admin@login.fr",
-    'password_caller': hashed_admin,
+    'password_caller': "admin",
     'id': "administrator@admin.fr",
     'password': "secret",
+    'firstName': "adminFirstName",
+    'lastName': "adminLastName",
     'client': False,
     'administrator':True
 })
@@ -54,9 +56,9 @@ print("Profil d'un  utilisateur (GET /api/users/flamant@club-internet.fr).")
 print("--------------------------------------------------------------")
 print("consulter avec (admin@login.fr, admin) comme administrateur.")
 print("----------------------------------------------------------")
-req = requests.get("http://127.0.0.1:5000/api/users/flamant@club-internet.fr", 
-json={"password_caller": hashed_admin})
+req = requests.get("http://127.0.0.1:5000/api/users/flamant@club-internet.fr", headers={"token": token}) 
 print("le statut de la requête est " + str(req.status_code))
+print("Le profil de l'utilisateur qui a comme userName flamant@club-internet.fr est le suivant")
 print(req.json())
 
 print("  ")
