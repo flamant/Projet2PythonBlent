@@ -1,4 +1,3 @@
-from metier_users import authenticate
 import requests
 from utils_encoding import hash_password
 from werkzeug.security import generate_password_hash, check_password_hash

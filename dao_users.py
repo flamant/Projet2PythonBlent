@@ -1,13 +1,18 @@
 from models import db, User
 from sqlalchemy.orm.exc import NoResultFound
+from flask import jsonify
 
 def create_user(user):
     if user.__class__.__name__ == 'User':
         if len(user.id) > 0 and len(user.password) > 0:
             if (user.client and not user.administrator) or (user.administrator and not user.client):
                 try:
+                    print("passe7")
+                    print("user")
+                    print(user)
                     db.session.query(User).filter_by(id=user.id).one()
-                    raise ValueError("L'utilisateur existe déjà en base de donnée.")
+                    print(jsonify({"L'utilisateur existe déjà en base de donnée."}), 401)
+                    return jsonify({"L'utilisateur existe déjà en base de donnée."}), 401
                 except NoResultFound as e:
                     # Ajouter à la session
                     db.session.add(user)

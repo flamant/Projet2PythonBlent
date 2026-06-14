@@ -2,7 +2,7 @@ import pytest
 
 from dao_users import create_user, get_user, get_list_of_users
 from models import CartItem, User
-from metier_users import authenticate
+
 
 
 def test_not_user():
@@ -78,18 +78,17 @@ def test_user_already_exists(db_session):
     )
     create_user(user)
 
-    with pytest.raises(ValueError, match="L'utilisateur existe déjà en base de donnée."):
-        create_user(
-            User(
-                id="dup@mail.fr",
-                password="other",
-                firstName="firstName",
-                lastName="lastName",
-                client=True,
-                administrator=False,
+    json = create_user(
+        User(
+            id="dup@mail.fr",
+            password="other",
+            firstName="firstName",
+            lastName="lastName",
+            client=True,
+            administrator=False,
             )
         )
-
+    assert json == json.dumps({"L'utilisateur existe déjà en base de donnée."})
 
 def test_get_user(db_session):
     user = User(
@@ -149,19 +148,3 @@ def test_get_all_user(db_session):
     assert founds[1].administrator == False
 
 
-def test_authenticate_no_result_found(db_session):
-    result = authenticate("unknownId", "unknownedPassword")
-    assert result == False
-
-def test_authenticate_result_found(db_session):
-    user = User(
-        id="get@mail.fr",
-        password="secret",
-        firstName="firstName",
-        lastName="lastName",
-        client=False,
-        administrator=True,
-    )
-    create_user(user)
-    result = authenticate("get@mail.fr", "secret")
-    assert result == True

@@ -1,7 +1,6 @@
 import json
 from flask import Blueprint, request, jsonify
 from dao_users import create_user, get_user, get_list_of_users
-from metier_users import authenticate
 from utils_encoding import decode_token, hash_password
 import jwt
 from datetime import datetime, timedelta
@@ -28,7 +27,6 @@ def user_profile(username):
     user = get_user(id_requester)
     token = request.headers.get("token", "0")
     if decode_token(token):
-    #auth = authenticate(id_requester, passwordCaller) 
     # si l'utilisateur passé dans le header existe bien en base   
         user = get_user(username)
         data = {"id": user.id, "password":user.password, "firstName":user.firstName, "lastName":user.lastName, "client":user.client, "administrator":user.administrator }
@@ -40,6 +38,7 @@ def user_profile(username):
 
 @users_bp.route('/auth/register', methods=["POST"])
 def register_utilisateur():
+    print('passe1')
     body = request.get_json()
     id = body.get("id", "")
     password = body.get("password")
@@ -50,18 +49,26 @@ def register_utilisateur():
     id_requester = body.get("id_caller", "0")
     passwordCaller = body.get("password_caller", "0")
     
-    #auth = authenticate(id_requester, passwordCaller)
     user = get_user(id_requester)
+    print("user")
+    print(user)
+    print("passe2")
+    
     pwhash = user.password
+    print(check_password_hash(pwhash, passwordCaller))
     #if check_password_hash(pwhash, password):
     # si l'appelant existe en base de donnée
     if (check_password_hash(pwhash, passwordCaller) and createAdministrator) or createClient:
+        print("passe3")
         if (user.administrator or (user.client and createClient)):
+            print("passe4")
             password= generate_password_hash(password)
             create_user(User(id=id, password=password, firstName=firstName, lastName=lastName, client=createClient, administrator=createAdministrator))
         else:
+            print("passe5")
             raise ValueError("L'utilisateur n'a pas le droit de créer un tel compte")
     else:
+        print("passe6")
         raise ValueError("L'appelant n'existe pas en base ou le mot de passe est incorrect")
     return jsonify({"message": f"Compte cree pour id={id}"}), 201
 
@@ -71,7 +78,6 @@ def connection_and_generate_token():
     body = request.get_json()
     id = body.get("id_caller", "0")
     password = body.get("password_caller", "0")
-    #if authenticate(id, password):
     user = get_user(id)
     pwhash = user.password
     if check_password_hash(pwhash, password):
