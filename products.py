@@ -15,11 +15,8 @@ products_bp = Blueprint('products', __name__)
 
 @products_bp.route('', methods=["GET"])
 def getProductList():
-    print('ca passe1')
     token = request.headers.get("token", "0")
-    print('ca passe2')
     if decode_token(token):
-        print('ca passe3')
         all_products = read_products()
         result = []
         for product in all_products:
@@ -43,13 +40,18 @@ def createNewProduct():
     body = request.get_json()
     id = body.get("id", "")
     name = body.get("name")
+    category = body.get("category")
     description = body.get("description")
     price = body.get("price")
     stock = body.get("stock")
-    payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
+    payload = None
+    try:
+        payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
+    except jwt.exceptions.InvalidTokenError:
+        return jsonify({"error": "le token est non valide."}), 401
     role = payload.get("role")
-    if role == "administrateur" and (token):
-        create_product(Product(id=id, name=name, description=description, price=price, stock=stock))
+    if role == "administrateur" and decode_token(token):
+        create_product(Product(id=id, name=name, category=category, description=description, price=price, stock=stock))
         return {"message": "Ok !"}, 200
     return {"error": "seul un administrateur a le droit de créer un produit et l'utilisateur doit être correctement authentifié."}, 401
 

@@ -78,7 +78,7 @@ def test_user_already_exists(db_session):
     )
     create_user(user)
 
-    json = create_user(
+    response, status_code  = create_user(
         User(
             id="dup@mail.fr",
             password="other",
@@ -88,7 +88,10 @@ def test_user_already_exists(db_session):
             administrator=False,
             )
         )
-    assert json == json.dumps({"L'utilisateur existe déjà en base de donnée."})
+    assert status_code == 401
+    assert response.get_json() == {
+        "error": "L'utilisateur existe déjà en base de donnée."
+    }
 
 def test_get_user(db_session):
     user = User(

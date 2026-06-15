@@ -11,8 +11,7 @@ def create_user(user):
                     print("user")
                     print(user)
                     db.session.query(User).filter_by(id=user.id).one()
-                    print(jsonify({"L'utilisateur existe déjà en base de donnée."}), 401)
-                    return jsonify({"L'utilisateur existe déjà en base de donnée."}), 401
+                    return jsonify({"error" : "L'utilisateur existe déjà en base de donnée."}), 401
                 except NoResultFound as e:
                     # Ajouter à la session
                     db.session.add(user)

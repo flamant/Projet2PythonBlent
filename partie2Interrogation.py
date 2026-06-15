@@ -78,3 +78,19 @@ print("----------------------------------------------------------")
 req = requests.get("http://127.0.0.1:5000/api/products/prod001", headers={"token": token})
 print("le statut de la requête est " + str(req.status_code))
 print(req.json())
+print("  ")
+print("  ")
+print("créer un nouveau produit (POST /api/products.")
+print("--------------------------------------------------------------")
+print("consulter avec le profil (admin@login.fr, admin) (token)")
+print("----------------------------------------------------------")
+req = requests.get("http://127.0.0.1:5000/api/products", headers={"token": token},
+json={
+    "id" : "prod004",
+    "name" : "Lucid Clavier sans fil",
+    "category" : "clavier", 
+    "description" : "Clavier portatif",
+    "price" : 140,
+    "stock" : 20
+})
+print("le statut de la requête est " + str(req.status_code))
