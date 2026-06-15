@@ -25,20 +25,26 @@ def read_specific_product(product_id):
 def create_product(product):
     if product.__class__.__name__ == 'Product':
         new_product = db.session.query(Product).filter_by(id=product.id).first()
+        print("ca passe8")
         if new_product is None:
             try:
+                print("ca passe9")
                 new_product = Product(id=product.id, name=product.name, category=product.category, description=product.description, price=product.price, stock=product.stock)
             except ValueError:
                 raise ValueError("Il y a une erreur dans les données envoyée pour créer un nouveau produit.")
             if new_product.__class__.__name__ == 'Product':
                 db.session.merge(new_product)
                 db.session.commit()
+                print("ca passe10")
                 print("Produit créé par un administrateur. ")
             else:
+                print("ca passe11")
                 raise ValueError("Il y a une erreur dans les données envoyée pour créer un nouveau produit.")
         else:
+            print("ca passe12")
             raise ValueError("Le produit est déjà créé.")
     else:
+        print("ca passe13")
         raise ValueError("Il y a une erreur dans les données envoyée pour créer un nouveau produit.")
 
 
