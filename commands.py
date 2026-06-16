@@ -4,11 +4,11 @@ from dao_commands import create_cart_when_not_exists, create_cart_item_when_not_
 import jwt
 from models import Cart, CartItem
 
-users_bp = Blueprint("commands", __name__)
+command_bp = Blueprint("commands", __name__)
 
 
 
-@app.route('/api/commandes', methods=["POST"])
+@command_bp.route('/api/commandes', methods=["POST"])
 def createNewCommand():
     token = request.headers.get("token", "0")
     if decode_token(token):
@@ -70,7 +70,7 @@ def createNewCommand():
     
     
 
-@app.route('/api/commandes', methods=["GET"])
+@command_bp.route('/api/commandes', methods=["GET"])
 def getCartList():
     token = request.headers.get("token", "0")
     if decode_token(token):
@@ -80,7 +80,7 @@ def getCartList():
 
 print("Récupérer une commande spécifique (GET /api/commandes/{id}) (client or administrator)")
 print("-------------------------------------------------------------------------------------")
-@app.route('/api/commandes/<id>', methods=["GET"])
+@command_bp.route('/api/commandes/<id>', methods=["GET"])
 def getSpecificCommand(id):
     token = request.headers.get("token", "0")
     if decode_token(token):
@@ -89,7 +89,7 @@ def getSpecificCommand(id):
     return {"error": "Jeton d'accès invalide."}, 401
 
 
-@app.route('/api/commandes/<id>/lignes', methods=["GET"])
+@command_bp.route('/api/commandes/<id>/lignes', methods=["GET"])
 def getLigneDeCommande(id):
     token = request.headers.get("token", "0")
     if decode_token(token):
@@ -98,7 +98,7 @@ def getLigneDeCommande(id):
     return {"error": "Jeton d'accès invalide."}, 401
 
 
-@app.route('/api/commandes/<id>', methods=["PATCH"])
+@command_bp.route('/api/commandes/<id>', methods=["PATCH"])
 #"Modifier le statut d'une commande (PATCH /api/commandes/{id}) - Admin uniquement"
 def ModifyCommandStatus(id):
     token = request.headers.get("token", "0")
