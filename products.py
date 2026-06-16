@@ -37,7 +37,6 @@ def getSpecificProduct(id):
 
 @products_bp.route('', methods=["POST"])
 def createNewProduct():
-    print("ca passe1")
     token = request.headers.get("token", "0")
     body = request.get_json()
     id = body.get("id", "")
@@ -47,21 +46,15 @@ def createNewProduct():
     price = body.get("price")
     stock = body.get("stock")
     payload = None
-    print("ca passe2")
     try:
         payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
-        print("ca passe3")
     except jwt.exceptions.InvalidTokenError:
-        print("ca passe4")
         return jsonify({"error": "le token est non valide."}), 401
-    print("ca passe5")
     role = payload.get("role")
     print("role")
     print(role)
     if role == "administrator" and decode_token(token):
-        print("ca passe6")
         create_product(Product(id=id, name=name, category=category, description=description, price=price, stock=stock))
-        print("ca passe7")
         return {"message": "Ok !"}, 200
     else:
         return {"error": "seul un administrateur a le droit de créer un produit et l'utilisateur doit être correctement authentifié."}, 401
@@ -71,7 +64,8 @@ def createNewProduct():
 def modifyProduct(id):
     token = request.headers.get("token", "0")
     body = request.get_json()
-    name = body.get("name")
+    name=body.get("name")
+    category=body.get("category")
     description = body.get("description")
     price = body.get("price")
     stock = body.get("stock")
@@ -88,10 +82,19 @@ def modifyProduct(id):
 
 @products_bp.route('/<id>', methods=["DELETE"])
 def deleteProduct(id):
+    print("ca passe1")
     token = request.headers.get("token", "0")
-    payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
+    payload = None
+    try:
+        payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
+    except:
+        return jsonify({"error": "le token est non valide."}), 401
     role = payload.get("role")
-    if role == "administrateur" and decode_token(token):
+    print("role")
+    print(role)
+    print("decode_token(token)")
+    print(decode_token(token))
+    if role == "administrator" and decode_token(token):
         delete_product(id)
         return {"message": "Ok !"}, 200
     return {"error": "seul un administrateur a le droit de créer un produit et l'utilisateur doit être correctement authentifié."}, 401

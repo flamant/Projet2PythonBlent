@@ -110,10 +110,47 @@ json={
 print("le statut de la requête est " + str(req.status_code))
 print("  ")
 print("  ")
-print("Afficher pproduits spécifique (GET /api/products/prod004.")
+print("Afficher pproduits spécifique qui a été modifié (GET /api/products/prod004.")
 print("--------------------------------------------------------------")
 print("consulter avec le profil (admin@login.fr, admin) (token)")
 print("----------------------------------------------------------")
 req = requests.get("http://127.0.0.1:5000/api/products/prod004", headers={"token": token})
 print("le statut de la requête est " + str(req.status_code))
 print(req.json())
+
+print("  ")
+print("  ")
+print("Suprimer le produits spécifique qui a été modifié (DELETE /api/products/prod004.")
+print("--------------------------------------------------------------")
+print("suppression avec le profil (admin@login.fr, admin) (token)")
+print("----------------------------------------------------------")
+req = requests.delete("http://127.0.0.1:5000/api/products/prod004", headers={"token": token})
+print("le statut de la requête est " + str(req.status_code))
+print(req.json())
+
+
+print("Créer une nouvelle commande (POST /api/commandes) - Admin uniquement")
+print("create a new command as administrator")
+print("-------------------------------------")
+req = requests.post("http://127.0.0.1:5000/api/commandes", headers={"token": token},
+json={
+    'cart_id': 1,
+    'cart_items': [
+        {
+            'cart_item_id': 1,
+            'product_id': 'prod001',
+            'quantity': 10
+        },
+        {
+            'cart_item_id': 2,
+            'product_id': 'prod002',
+            'quantity': 20           
+        },
+        {
+            'cart_item_id': 3,
+            'product_id': 'prod003',
+            'quantity': 30
+        }
+    ]
+})
+print("request status is "+ str(req.status_code))
