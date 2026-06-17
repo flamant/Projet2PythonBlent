@@ -1,9 +1,11 @@
 
+from models import Cart, CartItem, db, Product
+from datetime import datetime
+from sqlalchemy import func
 
 
 
-
-def create_cart_item_when_not_exists(cartItem):
+def create_cart_item_when_not_exists(cartItem, output_information):
     print("create_cart_item_when_not_exists")
     if cartItem.__class__.__name__ == 'CartItem':
         id_cart_item_max = db.session.query(func.max(CartItem.id)).scalar()
@@ -25,11 +27,11 @@ def create_cart_item_when_not_exists(cartItem):
         print("cartItem.quantity="+str(cartItem.quantity))
         if cartItem.quantity > old_stock:
             cartItem.quantity = old_stock
-            settings.output_information.append("le produit d'identifiant "+str(cartItem.product_id) + " n'est pas en quantité suffisante. On ne pourra commander que ce qu'il y a en stock, c'est à dire "+str(old_stock))
+            output_information.append("le produit d'identifiant "+str(cartItem.product_id) + " n'est pas en quantité suffisante. On ne pourra commander que ce qu'il y a en stock, c'est à dire "+str(old_stock))
             old_stock = 0
         else:
             old_stock = old_stock - cartItem.quantity
-            settings.output_information.append("le produit d'identifiant "+str(cartItem.product_id) + " est en quantité suffisante. Il ne restera en stock, que "+str(old_stock))
+            output_information.append("le produit d'identifiant "+str(cartItem.product_id) + " est en quantité suffisante. Il ne restera en stock, que "+str(old_stock))
         product_in_data_base.stock = old_stock
         db.session.merge(product_in_data_base)
         db.session.commit()
@@ -54,7 +56,7 @@ def create_cart_when_not_exists(cart):
 
         currentDateTime = datetime.now()
         next_max_cart_id = cart_id_max +1
-        new_cart = Cart(id=next_max_cart_id, created_at=currentDateTime, user_id=cart.user_id, status='processing')
+        new_cart = Cart(id=next_max_cart_id, created_at=currentDateTime, adress="17 rue du petit Neuilly,59530 Orsinval", user_id=cart.user_id, status='processing')
         db.session.merge(new_cart)
         db.session.commit()
         print(new_cart)

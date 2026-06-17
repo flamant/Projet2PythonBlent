@@ -1,17 +1,22 @@
 from flask import Blueprint, request
+from sqlalchemy.orm.exc import NoResultFound
 from utils_encoding import decode_token
 from dao_commands import create_cart_when_not_exists, create_cart_item_when_not_exists, get_list_of_carts, get_specific_cart, get_list_of_cart_items, modify_command_status
 import jwt
-from models import Cart, CartItem
+import os
+from models import Cart, CartItem, db
+from datetime import datetime
 
 command_bp = Blueprint("commands", __name__)
 
 
 
-@command_bp.route('/api/commandes', methods=["POST"])
+@command_bp.route('', methods=["POST"])
 def createNewCommand():
+    print("ca passe1")
     token = request.headers.get("token", "0")
     if decode_token(token):
+        print("ca passe2")
         payload = None
         try:
             payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
@@ -24,6 +29,7 @@ def createNewCommand():
         n = len(cart_items)
         item = [dict() for x in range(n)]
         number_cart_item=0
+        print("ca passe3")
         for cart_item in cart_items:
             print("number_cart_item="+str(number_cart_item))
             item[number_cart_item]['cart_item_id'] = cart_item['cart_item_id']
@@ -37,6 +43,7 @@ def createNewCommand():
             cart = create_cart_when_not_exists(Cart(id=1, created_at=datetime.utcnow, user_id=user_id, status='processing'))
 
         i = 0
+        output_information = []
         while i < number_cart_item:
             try:
                 print("item[i]['cart_item_id']="+str(item[i]['cart_item_id']))
@@ -44,7 +51,7 @@ def createNewCommand():
                 print(item[i])
             except NoResultFound:
                 print("item[i]['cart_item_id']="+str(item[i]['cart_item_id'])+",  cart_id="+str(cart_id)+",  product_id="+str(item[i]['product_id'])+",  quantity="+str(item[i]['quantity']))
-                item[i] = create_cart_item_when_not_exists(CartItem(id=item[i]['cart_item_id'], cart_id=cart_id, product_id=item[i]['product_id'], quantity=item[i]['quantity']))
+                item[i] = create_cart_item_when_not_exists(CartItem(id=item[i]['cart_item_id'], cart_id=cart_id, product_id=item[i]['product_id'], quantity=item[i]['quantity']), output_information)
                 print(item[i])
             i += 1
             
@@ -58,13 +65,15 @@ def createNewCommand():
             print("a") 
             print(a)
 
-        print(settings.output_information)
-        return {
+        print(output_information)
+        result = {
                 'cart_id': cart.id,
                 'user_id': cart.user_id,
                 'cart_items': a,
-                'comments' : ',\n'.join(map(str,settings.output_information))
+                'comments' : ',\n'.join(map(str,output_information))
                }
+        print(result)
+        return result
     else:
         return {"error": "l'utilisateur doit être correctement authentifié."}, 406
     

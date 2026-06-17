@@ -69,6 +69,8 @@ print("----------------------------------------------------------")
 req = requests.get("http://127.0.0.1:5000/api/products", headers={"token": token})
 print("le statut de la requête est " + str(req.status_code))
 print(req.json())
+
+
 print("  ")
 print("  ")
 print("Afficher pproduits spécifique (GET /api/products/id.")
@@ -78,6 +80,8 @@ print("----------------------------------------------------------")
 req = requests.get("http://127.0.0.1:5000/api/products/prod001", headers={"token": token})
 print("le statut de la requête est " + str(req.status_code))
 print(req.json())
+
+
 print("  ")
 print("  ")
 print("créer un nouveau produit (POST /api/products.")
@@ -128,7 +132,8 @@ req = requests.delete("http://127.0.0.1:5000/api/products/prod004", headers={"to
 print("le statut de la requête est " + str(req.status_code))
 print(req.json())
 
-
+print("  ")
+print("  ")
 print("Créer une nouvelle commande (POST /api/commandes) - Admin uniquement")
 print("create a new command as administrator")
 print("-------------------------------------")
