@@ -4,6 +4,7 @@ from utils_encoding import decode_token
 from dao_commands import create_cart_when_not_exists, create_cart_item_when_not_exists, get_list_of_carts, get_specific_cart, get_list_of_cart_items, modify_command_status
 import jwt
 import os
+import json
 from models import Cart, CartItem, db
 from datetime import datetime
 
@@ -48,6 +49,7 @@ def createNewCommand():
             try:
                 print("item[i]['cart_item_id']="+str(item[i]['cart_item_id']))
                 item[i] = db.session.query(CartItem).filter_by(id=item[i]['cart_item_id']).one()
+                output_information.append("")
                 print(item[i])
             except NoResultFound:
                 print("item[i]['cart_item_id']="+str(item[i]['cart_item_id'])+",  cart_id="+str(cart_id)+",  product_id="+str(item[i]['product_id'])+",  quantity="+str(item[i]['quantity']))
@@ -61,7 +63,7 @@ def createNewCommand():
         for i in range(len(item)):
             print("i") 
             print(i)
-            a.append({"cart_item_id": item[i].id, "product_id" : item[i].product_id, "quantity": item[i].quantity})
+            a.append({"cart_item_id": item[i].id, "product_id" : item[i].product_id, "quantity": item[i].quantity, "comments": output_information[i]})
             print("a") 
             print(a)
 
@@ -69,8 +71,7 @@ def createNewCommand():
         result = {
                 'cart_id': cart.id,
                 'user_id': cart.user_id,
-                'cart_items': a,
-                'comments' : ',\n'.join(map(str,output_information))
+                'cart_items': a
                }
         print(result)
         return result
@@ -79,17 +80,25 @@ def createNewCommand():
     
     
 
-@command_bp.route('/api/commandes', methods=["GET"])
+@command_bp.route('', methods=["GET"])
 def getCartList():
+    print("ca passe1")
     token = request.headers.get("token", "0")
     if decode_token(token):
-        get_list_of_carts(token, JWT_SECRET)
-        return {"message": "Ok !"}, 200
+        print("ca passe2")
+        all_carts = get_list_of_carts(token, os.getenv("JWT_SECRET"))
+        print("ca passe3")
+        print(all_carts)
+        result = []
+        for cart in all_carts:
+            print("json.dumps(cart.to_dict())")
+            result.append(json.dumps(cart.to_dict(), indent=4, sort_keys=True, default=str))
+        return result
     return {"error": "Jeton d'accès invalide."}, 401
 
 print("Récupérer une commande spécifique (GET /api/commandes/{id}) (client or administrator)")
 print("-------------------------------------------------------------------------------------")
-@command_bp.route('/api/commandes/<id>', methods=["GET"])
+@command_bp.route('/<id>', methods=["GET"])
 def getSpecificCommand(id):
     token = request.headers.get("token", "0")
     if decode_token(token):

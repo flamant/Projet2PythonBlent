@@ -159,3 +159,12 @@ json={
     ]
 })
 print("request status is "+ str(req.status_code))
+
+print("  ")
+print("  ")
+print("Afficher la liste de toutes les commandes si administrateur (GET /api/commandes)")
+print("sinon la liste des commandes créé par l'utilisateur (référencé par token)")
+print("-------------------------------------")
+req = requests.get("http://127.0.0.1:5000/api/commandes", headers={"token": token})
+print("request status is "+ str(req.status_code))
+print(req.json())

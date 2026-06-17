@@ -1,7 +1,9 @@
 
+
 from models import Cart, CartItem, db, Product
 from datetime import datetime
 from sqlalchemy import func
+import jwt
 
 
 
@@ -32,6 +34,8 @@ def create_cart_item_when_not_exists(cartItem, output_information):
         else:
             old_stock = old_stock - cartItem.quantity
             output_information.append("le produit d'identifiant "+str(cartItem.product_id) + " est en quantité suffisante. Il ne restera en stock, que "+str(old_stock))
+        print("output_information")
+        print(output_information)
         product_in_data_base.stock = old_stock
         db.session.merge(product_in_data_base)
         db.session.commit()
@@ -66,13 +70,17 @@ def create_cart_when_not_exists(cart):
 
 
 def get_list_of_carts(token, JWT_SECRET):
-    payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+    payload = None
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+    except jwt.exceptions.InvalidTokenError:
+        return jsonify({"error": "le token est non valide."}), 401
     user_id = payload.get("user") 
     role = payload.get("role") 
     # Récupérer tous les carts
     all_carts = db.session.query(Cart).all()
     print("role="+str(role))
-    if role == 'administrateur':
+    if role == 'administrator':
         print("role administrateur")
         print("\nTous les carts interrogé par un administrateur:")
         all_carts = db.session.query(Cart).all()
@@ -80,11 +88,11 @@ def get_list_of_carts(token, JWT_SECRET):
         print("role client"+str(user_id))
         print("\nTous les carts interrogé par un client:")
         all_carts = db.session.query(Cart).filter_by(user_id=user_id).all()
-    db.session.add_all(all_carts)
-    db.session.commit()
+
     
     for cart in all_carts:
-        print(cart)   
+        print(cart) 
+    return  all_carts
 
 
 def get_specific_cart(id):
