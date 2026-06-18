@@ -93,6 +93,8 @@ def getCartList():
         for cart in all_carts:
             print("json.dumps(cart.to_dict())")
             result.append(json.dumps(cart.to_dict(), indent=4, sort_keys=True, default=str))
+        print("result")
+        print(result)
         return result
     return {"error": "Jeton d'accès invalide."}, 401
 
@@ -102,8 +104,10 @@ print("-------------------------------------------------------------------------
 def getSpecificCommand(id):
     token = request.headers.get("token", "0")
     if decode_token(token):
-        get_specific_cart(id)
-        return {"message": "Ok !"}, 200
+        cart = get_specific_cart(id)
+        print("command")
+        print(cart)
+        return json.dumps(cart.to_dict(), indent=4, sort_keys=True, default=str)
     return {"error": "Jeton d'accès invalide."}, 401
 
 
