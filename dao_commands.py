@@ -134,3 +134,4 @@ def modify_command_status(id, created_at, status, adress, user_id):
     db.session.commit()
     print(cart)    
     return cart       
+

@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from dao_products import read_products, read_specific_product, create_product, update_product, delete_product
+from dao_products import read_products, read_specific_product, create_product, update_product, delete_product, get_Filtered_Products
 from utils_encoding import decode_token
 import json
 import jwt
@@ -98,3 +98,10 @@ def deleteProduct(id):
         delete_product(id)
         return {"message": "Ok !"}, 200
     return {"error": "seul un administrateur a le droit de créer un produit et l'utilisateur doit être correctement authentifié."}, 401
+
+
+
+@products_bp.route('/<name>/<price>', methods=["GET"])
+def getFilteredProducts(name, price):
+    products = get_Filtered_Products(name, price)
+    return products

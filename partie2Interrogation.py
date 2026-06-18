@@ -133,6 +133,17 @@ req = requests.delete("http://127.0.0.1:5000/api/products/prod004", headers={"to
 print("le statut de la requête est " + str(req.status_code))
 print(req.json())
 
+
+print("  ")
+print("  ")
+print("Rechercher produits par nom, prix, disponibilité (GET /api/products/name/price.")
+print("--------------------------------------------------------------")
+print("accessible par tout le monde")
+print("----------------------------------------------------------")
+req = requests.get("http://127.0.0.1:5000/api/products/azus/45")
+print("le statut de la requête est " + str(req.status_code))
+print(req.json())
+
 print("  ")
 print("  ")
 print("Créer une nouvelle commande (POST /api/commandes) - Admin uniquement")
