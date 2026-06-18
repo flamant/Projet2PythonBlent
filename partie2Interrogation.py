@@ -1,6 +1,7 @@
 import requests
 from utils_encoding import hash_password
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 
 hashed_admin = generate_password_hash("admin")
 print("hashed_admin")
@@ -184,5 +185,20 @@ print("Afficher les lignes (CartItem) de la commande spécifique d'identifiant i
 print("l'utilisateur est référencé par token")
 print("-------------------------------------")
 req = requests.get("http://127.0.0.1:5000/api/commandes/1/lignes", headers={"token": token})
+print("request status is "+ str(req.status_code))
+print(req.json())
+
+print("  ")
+print("  ")
+print("Modifier un  cart  de la commande spécifique d'identifiant id (PUT /api/commandes)")
+print("l'utilisateur est référencé par token")
+print("-------------------------------------")
+req = requests.put("http://127.0.0.1:5000/api/commandes", headers={"token": token},
+json={
+    "created_at" : datetime.utcnow,
+    "status" : "pending",
+    "adress" : "5 rue du moulin, 59530 Orsinval",
+    "user_id" : "flamant@club-internet.fr"
+})
 print("request status is "+ str(req.status_code))
 print(req.json())

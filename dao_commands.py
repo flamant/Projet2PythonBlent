@@ -119,12 +119,16 @@ def get_list_of_cart_items(id):
         print(cartItem)   
     return all_cart_items
 
-def modify_command_status(id):
+def modify_command_status(id, created_at, status, adress, user_id):
     try:
         cart = db.session.query(Cart).filter_by(id=int(id)).one()
     except NoResultFound: 
-        raise NoResultFound("this cart is unknown")
-    cart.status = 'cancelled'
+        return jsonify({"error": "le cart d'identifiant " + id +" n'existe pas."}), 401
+    cart.created_at = created_at
+    cart.status = status
+    cart.adress = adress
+    cart.user_id = user_id
     db.session.merge(cart)
     db.session.commit()
-    print(cart)           
+    print(cart)    
+    return cart       

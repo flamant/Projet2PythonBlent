@@ -113,13 +113,10 @@ def getSpecificCommand(id):
 
 @command_bp.route('/<id>/lignes', methods=["GET"])
 def getLigneDeCommande(id):
-    print("ca passe1")
     token = request.headers.get("token", "0")
     if decode_token(token):
-        print("ca passe2")
         all_cart_items = get_list_of_cart_items(id)
         result = []
-        print("ca passe3")
         for cart_item in all_cart_items:
             print("json.dumps(cart_item.to_dict())")
             result.append(json.dumps(cart_item.to_dict()))
@@ -129,13 +126,24 @@ def getLigneDeCommande(id):
     return {"error": "Jeton d'accès invalide."}, 401
 
 
-@command_bp.route('/api/commandes/<id>', methods=["PATCH"])
-#"Modifier le statut d'une commande (PATCH /api/commandes/{id}) - Admin uniquement"
+@command_bp.route('/<id>', methods=["PUT"])
+#"Modifier une commande d'identifiant id (PUT /api/commandes/{id}) - Admin uniquement"
 def ModifyCommandStatus(id):
     token = request.headers.get("token", "0")
-    payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+    body = request.get_json()
+    created_at = body.get("created_at")
+    status = body.get("status")
+    adress = body.get("adress")
+    user_id = body.get("user_id")
+    payload = None
+    try:
+        payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
+    except jwt.exceptions.InvalidTokenError:
+        return jsonify({"error": "le token est non valide."}), 401
     role = payload.get("role") 
-    if decode_token(token) and role == 'administrateur':
-        modify_command_status(id)
-        return {"message": "Ok !"}, 200
+    if decode_token(token) and role == 'administrator':
+        modified_command = modify_command_status(id, created_at, status, adress, user_id)
+        print("modified command")
+        print(modified_command)
+        return json.dumps(modified_command.to_dict(), indent=4, sort_keys=True, default=str)
     return {"error": "Jeton d'accès invalide."}, 401
