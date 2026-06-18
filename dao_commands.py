@@ -122,7 +122,9 @@ def get_list_of_cart_items(id):
 def modify_command_status(id, created_at, status, adress, user_id):
     try:
         cart = db.session.query(Cart).filter_by(id=int(id)).one()
+        print("ca passe5")
     except NoResultFound: 
+        print("ca passe6")
         return jsonify({"error": "le cart d'identifiant " + id +" n'existe pas."}), 401
     cart.created_at = created_at
     cart.status = status

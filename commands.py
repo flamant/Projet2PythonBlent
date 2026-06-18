@@ -6,7 +6,7 @@ import jwt
 import os
 import json
 from models import Cart, CartItem, db
-from datetime import datetime
+import datetime
 
 command_bp = Blueprint("commands", __name__)
 
@@ -129,19 +129,23 @@ def getLigneDeCommande(id):
 @command_bp.route('/<id>', methods=["PUT"])
 #"Modifier une commande d'identifiant id (PUT /api/commandes/{id}) - Admin uniquement"
 def ModifyCommandStatus(id):
+    print("ca passe1")
     token = request.headers.get("token", "0")
     body = request.get_json()
-    created_at = body.get("created_at")
+    created_at = datetime.datetime.now()
     status = body.get("status")
     adress = body.get("adress")
     user_id = body.get("user_id")
     payload = None
+    print("ca passe2")
     try:
         payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
+        print("ca passe3")
     except jwt.exceptions.InvalidTokenError:
         return jsonify({"error": "le token est non valide."}), 401
     role = payload.get("role") 
     if decode_token(token) and role == 'administrator':
+        print("ca passe4")
         modified_command = modify_command_status(id, created_at, status, adress, user_id)
         print("modified command")
         print(modified_command)

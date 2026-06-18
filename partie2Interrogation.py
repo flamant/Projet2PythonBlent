@@ -193,9 +193,8 @@ print("  ")
 print("Modifier un  cart  de la commande spécifique d'identifiant id (PUT /api/commandes)")
 print("l'utilisateur est référencé par token")
 print("-------------------------------------")
-req = requests.put("http://127.0.0.1:5000/api/commandes", headers={"token": token},
+req = requests.put("http://127.0.0.1:5000/api/commandes/1", headers={"token": token},
 json={
-    "created_at" : datetime.utcnow,
     "status" : "pending",
     "adress" : "5 rue du moulin, 59530 Orsinval",
     "user_id" : "flamant@club-internet.fr"
