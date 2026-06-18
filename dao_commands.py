@@ -117,6 +117,7 @@ def get_list_of_cart_items(id):
     print(all_cart_items)
     for cartItem in all_cart_items:
         print(cartItem)   
+    return all_cart_items
 
 def modify_command_status(id):
     try:

@@ -111,12 +111,21 @@ def getSpecificCommand(id):
     return {"error": "Jeton d'accès invalide."}, 401
 
 
-@command_bp.route('/api/commandes/<id>/lignes', methods=["GET"])
+@command_bp.route('/<id>/lignes', methods=["GET"])
 def getLigneDeCommande(id):
+    print("ca passe1")
     token = request.headers.get("token", "0")
     if decode_token(token):
-        get_list_of_cart_items(id)
-        return {"message": "Ok !"}, 200
+        print("ca passe2")
+        all_cart_items = get_list_of_cart_items(id)
+        result = []
+        print("ca passe3")
+        for cart_item in all_cart_items:
+            print("json.dumps(cart_item.to_dict())")
+            result.append(json.dumps(cart_item.to_dict()))
+        print("result")
+        print(result)
+        return result
     return {"error": "Jeton d'accès invalide."}, 401
 
 
