@@ -1,4 +1,7 @@
 from models import db, Product
+from sqlalchemy import or_, and_
+from sqlalchemy import desc, asc, func
+import json
 
 def read_products():
     # Récupérer tous les produits
@@ -93,15 +96,21 @@ def delete_product(product_id):
 # cette métode retourne les produits dont le nom contiant name, puis les produits ayant un prix le plus proche 
 # de price et dont le stock est supérieur à 0 (disponible)
 def get_Filtered_Products(name, price):
-    products1 = db.session.query(Product).filter(or_(Product.name.contains(name), Product.stock > 0)).all()
+    print("ca passe2")
+    products1 = db.session.query(Product).filter(and_(Product.name.contains(name), Product.stock > 0)).all()
+    print("ca passe3")
     products2 = db.session.query(Product).filter(Product.stock > 0).order_by(asc(func.abs(Product.price-price)), desc(Product.stock)).all()
+    print("ca passe4")
     result = []
+    ids = []
     for product in products1:
         print("json.dumps(product.to_dict())")
         result.append(json.dumps(product.to_dict()))
+        ids.append(product.id)
     for product in products2:
-        print("json.dumps(product.to_dict())")
-        result.append(json.dumps(product.to_dict()))
+        if product.id not in ids:
+            print("json.dumps(product.to_dict())")
+            result.append(json.dumps(product.to_dict()))
     print("result")
     print(result)
     return result

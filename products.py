@@ -103,5 +103,6 @@ def deleteProduct(id):
 
 @products_bp.route('/<name>/<price>', methods=["GET"])
 def getFilteredProducts(name, price):
+    print("ca passe1")
     products = get_Filtered_Products(name, price)
     return products
