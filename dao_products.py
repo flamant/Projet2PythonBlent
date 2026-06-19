@@ -6,12 +6,6 @@ import json
 def read_products():
     # Récupérer tous les produits
     all_products = db.session.query(Product).all()
-    # Ajouter à la session
-    #db.session.add_all(all_products)
-    #db.session.commit()
-    print("\nTous les produits:")
-    for product in all_products:
-        print(product)
     return all_products
 
     
@@ -40,6 +34,7 @@ def create_product(product):
                 db.session.commit()
                 print("ca passe10")
                 print("Produit créé par un administrateur. ")
+                return new_product
             else:
                 print("ca passe11")
                 raise ValueError("Il y a une erreur dans les données envoyée pour créer un nouveau produit.")
@@ -76,7 +71,6 @@ def update_product(product):
 
 
 def delete_product(product_id):
-    print("ca passe1")
     # Récupérer le produit à supprimer
     product = db.session.query(Product).filter_by(id=product_id).first()
     # Ajouter à la session
