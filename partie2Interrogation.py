@@ -117,6 +117,7 @@ json={
     "stock" : 25
 })
 print("le statut de la requête est " + str(req.status_code))
+print(req.json().get("message"))
 print("  ")
 print("  ")
 print("Afficher pproduits spécifique qui a été modifié (GET /api/products/prod004.")
@@ -135,7 +136,7 @@ print("suppression avec le profil (admin@login.fr, admin) (token)")
 print("----------------------------------------------------------")
 req = requests.delete("http://127.0.0.1:5000/api/products/prod004", headers={"token": token})
 print("le statut de la requête est " + str(req.status_code))
-print(req.json())
+print(req.json().get("message"))
 
 
 print("  ")
@@ -175,7 +176,7 @@ json={
     ]
 })
 print("request status is "+ str(req.status_code))
-
+print(req.json().get("message"))
 print("  ")
 print("  ")
 print("Afficher la liste de toutes les commandes si administrateur (GET /api/commandes)")

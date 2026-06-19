@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from dao_products import read_products, read_specific_product, create_product, update_product, delete_product, get_Filtered_Products
 from utils_encoding import decode_token
 import json
@@ -37,6 +37,7 @@ def getSpecificProduct(id):
 
 @products_bp.route('', methods=["POST"])
 def createNewProduct():
+    print("ca passe1")
     token = request.headers.get("token", "0")
     body = request.get_json()
     id = body.get("id", "")
@@ -55,6 +56,7 @@ def createNewProduct():
     print(role)
     if role == "administrator" and decode_token(token):
         create_product(Product(id=id, name=name, category=category, description=description, price=price, stock=stock))
+        print("ca passe2")
         return jsonify({"message" : "Le produit a bien été créé en base de donnée."}), 401
     else:
         return {"error": "seul un administrateur a le droit de créer un produit et l'utilisateur doit être correctement authentifié."}, 401
@@ -77,7 +79,7 @@ def modifyProduct(id):
     role = payload.get("role")
     if role == "administrator" and decode_token(token):
         update_product(Product(id=id, name=name, category=category, description=description, price=price, stock=stock))
-        return {"message": "Ok !"}, 200
+        return jsonify({"message" : "Le produit a bien été modifié en base de donnée."}), 201
     return {"error": "seul un administrateur a le droit de créer un produit et l'utilisateur doit être correctement authentifié."}, 401
 
 @products_bp.route('/<id>', methods=["DELETE"])
@@ -96,7 +98,7 @@ def deleteProduct(id):
     print(decode_token(token))
     if role == "administrator" and decode_token(token):
         delete_product(id)
-        return {"message": "Ok !"}, 200
+        return jsonify({"message" : "Le produit a bien été supprimé en base de donnée."}), 200
     return {"error": "seul un administrateur a le droit de créer un produit et l'utilisateur doit être correctement authentifié."}, 401
 
 
