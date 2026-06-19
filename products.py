@@ -55,7 +55,7 @@ def createNewProduct():
     print(role)
     if role == "administrator" and decode_token(token):
         create_product(Product(id=id, name=name, category=category, description=description, price=price, stock=stock))
-        return {"message": "Ok !"}, 200
+        return jsonify({"message" : "Le produit a bien été créé en base de donnée."}), 401
     else:
         return {"error": "seul un administrateur a le droit de créer un produit et l'utilisateur doit être correctement authentifié."}, 401
 

@@ -49,6 +49,7 @@ json={
     'administrator':True
 })
 print("le statut de la requête est " + str(req.status_code))
+print(req.json().get("message"))
 
 print("  ")
 print("  ")
@@ -69,6 +70,7 @@ print("consulter avec le profil (admin@login.fr, admin) (token)")
 print("----------------------------------------------------------")
 req = requests.get("http://127.0.0.1:5000/api/products", headers={"token": token})
 print("le statut de la requête est " + str(req.status_code))
+print("Laliste des produits est")
 print(req.json())
 
 
@@ -80,6 +82,7 @@ print("consulter avec le profil (admin@login.fr, admin) (token)")
 print("----------------------------------------------------------")
 req = requests.get("http://127.0.0.1:5000/api/products/prod001", headers={"token": token})
 print("le statut de la requête est " + str(req.status_code))
+print("Le produit d'identifiant prod001 est le suivant")
 print(req.json())
 
 
@@ -99,6 +102,7 @@ json={
     "stock" : 20
 })
 print("le statut de la requête est " + str(req.status_code))
+print(req.json().get("message"))
 print("  ")
 print("  ")
 print("modifier un produit (POST /api/products/<id>.")
