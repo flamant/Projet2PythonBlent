@@ -2,6 +2,8 @@ from models import db, Product
 from sqlalchemy import or_, and_
 from sqlalchemy import desc, asc, func
 import json
+from flask import jsonify
+
 
 def read_products():
     # Récupérer tous les produits
@@ -15,25 +17,19 @@ def read_specific_product(product_id):
     # Ajouter à la session
     #db.session.add(specific_product)
     #db.session.commit()
-    print("\nProduit spécifique:")
-    print(specific_product)
     return specific_product
     
 def create_product(product):
     if product.__class__.__name__ == 'Product':
         new_product = db.session.query(Product).filter_by(id=product.id).first()
-        print("ca passe8")
         if new_product is None:
             try:
-                print("ca passe9")
                 new_product = Product(id=product.id, name=product.name, category=product.category, description=product.description, price=product.price, stock=product.stock)
             except ValueError:
                 raise ValueError("Il y a une erreur dans les données envoyée pour créer un nouveau produit.")
             if new_product.__class__.__name__ == 'Product':
                 db.session.merge(new_product)
                 db.session.commit()
-                print("ca passe10")
-                print("Produit créé par un administrateur. ")
                 return new_product
             else:
                 print("ca passe11")
@@ -60,10 +56,9 @@ def update_product(product):
         db.session.add(old_product)
         # Commit pour sauvegarder les changements
         db.session.commit()
-        print("\nProduit mis à jour:")
-        print(old_product)
+        return old_product
     else:
-        print("\nProduit non trouvé!")
+        return jsonify({"error" : "Produit non trouvé en base de donnée."}), 401
 
 
 

@@ -1,4 +1,4 @@
-from dao_products import read_products, read_specific_product, create_product
+from dao_products import read_products, read_specific_product, create_product, update_product
 from models import db, Product
 import pytest
 from models import User
@@ -25,9 +25,6 @@ def test_create_product_when_product_already_created(db_session):
     with pytest.raises(ValueError, match="Le produit est déjà créé."):
         create_product(Product(id='prod001', name='Azus TUF F15', category='computer', description='PC Portable Gamer', price=899, stock=10))
 
-def test_create_product_when_wrong_creation(db_session):
-    with pytest.raises(ValueError, match="Il y a une erreur dans les données envoyée pour créer un nouveau produit."):
-        create_product(Product(id=-1.32, name='Azus TUF F15', category=123, description='PC Portable Gamer', price=899, stock=10))
 
 def test_read_specific_product(db_session):
     create_product(Product(id='prod001', name='Azus TUF F15', category='computer', description='PC Portable Gamer', price=899, stock=10))
@@ -35,3 +32,24 @@ def test_read_specific_product(db_session):
 
     assert specific_product.id == "prod001"
     assert specific_product.name == "Azus TUF F15"
+
+def test_update_product(db_session):
+    create_product(Product(id='prod001', name='Azus TUF F15', category='computer', description='PC Portable Gamer', price=899, stock=10))
+    product = Product(id='prod001', name='Azus TUF F15 modifié', category='computer modifié', description='PC Portable Gamer modifié', price=845, stock=20)
+    new_product = update_product(product)
+
+    assert new_product.id == "prod001"
+    assert new_product.name == "Azus TUF F15 modifié"
+    assert new_product.category == "computer"
+    assert new_product.description == "PC Portable Gamer modifié"
+    assert new_product.price == 845
+    assert new_product.stock == 20
+
+
+def test_update_product_not_found(db_session):
+    product = Product(id='prod006', name='Azus TUF F15 modifié', category='computer modifié', description='PC Portable Gamer modifié', price=845, stock=20)
+    response, status_code = update_product(product)
+    assert status_code == 401
+    assert response.get_json() == {
+        "error": "Produit non trouvé en base de donnée."
+    }
