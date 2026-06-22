@@ -68,38 +68,34 @@ def update_product(product):
 def delete_product(product_id):
     # Récupérer le produit à supprimer
     product = db.session.query(Product).filter_by(id=product_id).first()
-    # Ajouter à la session
-    db.session.add(product)
-    db.session.commit()
     if product:
         # Supprimer le produit
         db.session.delete(product)
-        
         # Commit pour sauvegarder les changements
         db.session.commit()
-        print("\nProduit avec id=" + product_id + "supprimé!")
+        return jsonify({"message" : "Le Produit a été supprimé de la base de donnée."}), 200
     else:
-        print("\nProduit non trouvé!")
+        return jsonify({"error" : "Produit non trouvé en base de donnée."}), 401
 
 
 # cette métode retourne les produits dont le nom contiant name, puis les produits ayant un prix le plus proche 
 # de price et dont le stock est supérieur à 0 (disponible)
 def get_Filtered_Products(name, price):
-    print("ca passe2")
     products1 = db.session.query(Product).filter(and_(Product.name.contains(name), Product.stock > 0)).all()
-    print("ca passe3")
+    print("products1")
+    print(products1)
     products2 = db.session.query(Product).filter(Product.stock > 0).order_by(asc(func.abs(Product.price-price)), desc(Product.stock)).all()
-    print("ca passe4")
+    print("products2")
+    print(products2)
     result = []
     ids = []
     for product in products1:
-        print("json.dumps(product.to_dict())")
-        result.append(json.dumps(product.to_dict()))
+        result.append(product.to_dict())
         ids.append(product.id)
+    print("result")
+    print(result)
     for product in products2:
         if product.id not in ids:
-            print("json.dumps(product.to_dict())")
-            result.append(json.dumps(product.to_dict()))
-    print("result")
+            result.append(product.to_dict())
     print(result)
     return result

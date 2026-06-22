@@ -1,7 +1,8 @@
-from dao_products import read_products, read_specific_product, create_product, update_product
+from dao_products import read_products, read_specific_product, create_product, update_product, delete_product, get_Filtered_Products
 from models import db, Product
 import pytest
 from models import User
+from init_db import add_sample_products_and_add_admin_and_client
 
 def test_read_products(db_session):
     all_products = read_products()
@@ -53,3 +54,30 @@ def test_update_product_not_found(db_session):
     assert response.get_json() == {
         "error": "Produit non trouvé en base de donnée."
     }
+
+def test_delete_product_not_found(db_session):
+    
+    response, status_code = delete_product("prod006")
+    assert status_code == 401
+    assert response.get_json() == {
+        "error": "Produit non trouvé en base de donnée."
+    }
+
+def test_delete_product(db_session):
+    add_sample_products_and_add_admin_and_client()
+    response, status_code = delete_product("prod003")
+    assert status_code == 200
+    assert response.get_json() == {
+        "message": "Le Produit a été supprimé de la base de donnée."
+    }
+
+# cette métode retourne les produits dont le nom contiant name, puis les produits ayant un prix le plus proche 
+# de price et dont le stock est supérieur à 0 (disponible)
+def test_hget_filtered_products(db_session):
+    add_sample_products_and_add_admin_and_client()
+    result = get_Filtered_Products("Azus", 45)
+
+    assert len(result) == 3
+    assert result[0]["id"] == "prod001"
+    assert result[1]["id"] == "prod002"
+    assert result[2]["id"] == "prod003"
