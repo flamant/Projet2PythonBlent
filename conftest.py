@@ -1,5 +1,5 @@
 import pytest
-
+from conftest import add_sample_products_and_add_admin_and_client
 from models import app, db
 
 
@@ -12,6 +12,7 @@ def db_session():
     with app.app_context():
         db.engine.dispose()
         db.create_all()
+        add_sample_products_and_add_admin_and_client()
         yield db
         db.session.remove()
         db.drop_all()
