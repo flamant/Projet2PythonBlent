@@ -73,7 +73,7 @@ def get_list_of_carts(token, JWT_SECRET):
     try:
         payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
     except jwt.exceptions.InvalidTokenError:
-        return jsonify({"error": "le token est non valide."}), 401
+        raise ValueError("le token est non valide.")
     user_id = payload.get("user") 
     role = payload.get("role") 
     # Récupérer tous les carts

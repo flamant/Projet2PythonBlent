@@ -51,19 +51,33 @@ def test_create_cart_when_not_exists(db_session):
     assert created_cart.user_id == 1
     assert created_cart.status == 'processing'
 
-'''def create_cart_when_not_exists(cart):
-    if cart.__class__.__name__ == 'Cart':
-        cart_id_max = db.session.query(func.max(Cart.id)).scalar()
-        if cart_id_max == None:
-            cart_id_max = 0
-        print("max=" + str(cart_id_max))
+def test_get_list_of_carts_when_invalid_token(db_session):
+    with pytest.raises(ValueError, match="le token est non valide."):
+        get_list_of_carts("abcdef", os.getenv("JWT_SECRET"))
 
-        currentDateTime = datetime.now()
-        next_max_cart_id = cart_id_max +1
-        new_cart = Cart(id=next_max_cart_id, created_at=currentDateTime, adress="cart.adress", user_id=cart.user_id, status='processing')
-        db.session.merge(new_cart)
-        db.session.commit()
-        print(new_cart)
-        return new_cart
+
+        
+'''def get_list_of_carts(token, JWT_SECRET):
+    payload = None
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+    except jwt.exceptions.InvalidTokenError:
+        return jsonify({"error": "le token est non valide."}), 401
+    user_id = payload.get("user") 
+    role = payload.get("role") 
+    # Récupérer tous les carts
+    all_carts = db.session.query(Cart).all()
+    print("role="+str(role))
+    if role == 'administrator':
+        print("role administrateur")
+        print("\nTous les carts interrogé par un administrateur:")
+        all_carts = db.session.query(Cart).all()
     else:
-        raise ValueError("Il y a une erreur dans les données envoyée pour créer un nouveau panier.")'''
+        print("role client"+str(user_id))
+        print("\nTous les carts interrogé par un client:")
+        all_carts = db.session.query(Cart).filter_by(user_id=user_id).all()
+
+    
+    for cart in all_carts:
+        print(cart) 
+    return  all_carts'''
