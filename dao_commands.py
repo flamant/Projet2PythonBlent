@@ -17,8 +17,7 @@ def create_cart_item_when_not_exists(cartItem, output_information):
         #----------------------------------------------------#
         print("verifier si le stock du produit est suffisant")
         print("CartItem.product_id="+str(cartItem.product_id))
-        product_in_data_base = db.session.query(Product).filter_by(id=cartItem.product_id).one()    
-        print(product_in_data_base)
+        product_in_data_base = None   
         try:
             product_in_data_base = db.session.query(Product).filter_by(id=cartItem.product_id).one()    
         except NoResultFound: 
@@ -60,13 +59,13 @@ def create_cart_when_not_exists(cart):
 
         currentDateTime = datetime.now()
         next_max_cart_id = cart_id_max +1
-        new_cart = Cart(id=next_max_cart_id, created_at=currentDateTime, adress="17 rue du petit Neuilly,59530 Orsinval", user_id=cart.user_id, status='processing')
+        new_cart = Cart(id=next_max_cart_id, created_at=currentDateTime, adress=cart.adress, user_id=cart.user_id, status='processing')
         db.session.merge(new_cart)
         db.session.commit()
         print(new_cart)
         return new_cart
     else:
-        raise ValueError("Il y a une erreur dans les données envoyée pour créer un nouvel item de panier.")
+        raise ValueError("Il y a une erreur dans les données envoyée pour créer un nouveau panier.")
 
 
 def get_list_of_carts(token, JWT_SECRET):
