@@ -75,16 +75,25 @@ def register_utilisateur():
 
 @users_bp.route('/auth/login', methods=["POST"])
 def connection_and_generate_token():
+    print("ca passe1")
     body = request.get_json()
     id = body.get("id_caller", "0")
     password = body.get("password_caller", "0")
     user = get_user(id)
     pwhash = user.password
+    print("ca passe2")
     if check_password_hash(pwhash, password):
+        print("ca passe3")
         print("user")
         print(user)
         
         if user.administrator:
+            print("ca passe4")
+            print(os.getenv("JWT_SECRET"))
+            print(os.environ.get("JWT_SECRET"))
+            print(str(datetime.utcnow() + timedelta(hours=1)))
+            print(datetime.utcnow() + timedelta(hours=1))
+
             token = jwt.encode(
                 {
                     "exp": datetime.utcnow() + timedelta(hours=1),
@@ -95,6 +104,7 @@ def connection_and_generate_token():
                 algorithm="HS256"
             )
         else:
+            print("ca passe5")
             token = jwt.encode(
                 {
                     "exp": datetime.utcnow() + timedelta(hours=1),
@@ -104,6 +114,8 @@ def connection_and_generate_token():
                 os.getenv("JWT_SECRET"),
                 algorithm="HS256"
                 )
+        print("ca passe6")
+        print(token)
         data = {"token": token }
         return jsonify(data),200
     else:

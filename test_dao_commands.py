@@ -3,7 +3,47 @@ import pytest
 from datetime import datetime
 from models import User
 from init_db import add_sample_products_and_add_admin_and_client
-from dao_commands import create_cart_item_when_not_exists, create_cart_when_not_exists
+from dao_commands import create_cart_item_when_not_exists, create_cart_when_not_exists, get_list_of_carts
+import os
+from werkzeug.security import generate_password_hash, check_password_hash
+import requests
+from dotenv import load_dotenv, dotenv_values 
+import jwt
+from flask import jsonify
+
+hashed_admin = generate_password_hash("admin")
+
+hashed_antoine = generate_password_hash("antoine")
+
+load_dotenv() 
+
+print("Connexion et génération de token JWT (POST /api/auth/login).")
+print("connection avec (admin@login.fr,admin) (administrator) and generer le token.")
+print("---------------------------------------------------------------------")
+req = requests.post("http://127.0.0.1:5000/api/auth/login",
+json={
+    "id_caller": "admin@login.fr",
+    "password_caller": "admin"
+})
+print("le statut de la requête est " + str(req.status_code))
+token = req.json().get("token")
+
+#os.environ["token_admin"] = token
+token_admin = os.environ.get("token_admin", token)
+
+print("Connexion et génération de token JWT (POST /api/auth/login).")
+print("connection avec (admin@login.fr,admin) (administrator) and generer le token.")
+print("---------------------------------------------------------------------")
+req = requests.post("http://127.0.0.1:5000/api/auth/login",
+json={
+    "id_caller": "flamant@club-internet.fr",
+    "password_caller": "antoine"
+})
+print("le statut de la requête est " + str(req.status_code))
+#token = req.json().get("token")
+token_antoine = os.environ.get("token_antoine", token)
+
+#os.environ["token_antoine"] = token
 
 def test_create_cart_item_when_not_exists_bad_argument(db_session):
     with pytest.raises(ValueError, match="Il y a une erreur dans les données envoyée pour créer un nouvel item de panier."):
@@ -55,9 +95,28 @@ def test_get_list_of_carts_when_invalid_token(db_session):
     with pytest.raises(ValueError, match="le token est non valide."):
         get_list_of_carts("abcdef", os.getenv("JWT_SECRET"))
 
-
+def test_get_list_of_carts_when_role_administrator(db_session):
+    # admin@login.fr create a cart
+    new_cart = Cart(id=1, created_at=datetime.now(), adress="10 rue du moulin, 59530 Orsinval", user_id="admin@login.fr", status='processing')
+    created_cart = create_cart_when_not_exists(new_cart)
+    # flamant@club-internet.fr create a cart
+    new_cart = Cart(id=1, created_at=datetime.now(), adress="17 rue du petit Neuilly,59530 Orsinval", user_id="flamant@club-internet.fr", status='processing')
+    created_cart = create_cart_when_not_exists(new_cart)
+    print("token_admin")
+    print(token_admin)
+    print(os.environ.get("token_admin"))
+    print("JWT_SECRET")
+    print(os.environ.get("JWT_SECRET"))
+    all_carts = get_list_of_carts(token_admin, os.environ.get("JWT_SECRET"))
+    #all_carts = get_list_of_carts(os.getenv("token_admin"), os.getenv("JWT_SECRET"))
+    assert len(all_carts) == 2
+    assert all_carts[0].id == 1
+    assert all_carts[1].id == 2
+    all_carts = get_list_of_carts(token_antoine, os.getenv("JWT_SECRET"))
+    assert len(all_carts) == 1
+    assert all_carts[0].id == 2
         
-'''def get_list_of_carts(token, JWT_SECRET):
+def get_list_of_carts(token, JWT_SECRET):
     payload = None
     try:
         payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
@@ -80,4 +139,4 @@ def test_get_list_of_carts_when_invalid_token(db_session):
     
     for cart in all_carts:
         print(cart) 
-    return  all_carts'''
+    return  all_carts
