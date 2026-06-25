@@ -3,7 +3,7 @@ import pytest
 from datetime import datetime
 from models import User
 from init_db import add_sample_products_and_add_admin_and_client
-from dao_commands import create_cart_item_when_not_exists, create_cart_when_not_exists, get_list_of_carts
+from dao_commands import create_cart_item_when_not_exists, create_cart_when_not_exists, get_list_of_carts, get_list_of_cart_items, get_specific_cart
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 import requests
@@ -83,14 +83,6 @@ def test_create_cart_when_not_exists_when_wrong_argument(db_session):
         cartItem = Product(id='prod001', name='Azus TUF F15', category='computer', description='PC Portable Gamer', price=899, stock=10)
         create_cart_when_not_exists(cartItem)
 
-def test_create_cart_when_not_exists(db_session):
-    new_cart = Cart(id=1, created_at=datetime.now(), adress="17 rue du petit Neuilly,59530 Orsinval", user_id=1, status='processing')
-    created_cart = create_cart_when_not_exists(new_cart)
-    assert created_cart.id == 1
-    assert created_cart.adress == "17 rue du petit Neuilly,59530 Orsinval"
-    assert created_cart.user_id == 1
-    assert created_cart.status == 'processing'
-
 def test_get_list_of_carts_when_invalid_token(db_session):
     with pytest.raises(ValueError, match="le token est non valide."):
         print("test_get_list_of_carts_when_invalid_token")
@@ -123,6 +115,36 @@ def test_get_list_of_carts_when_role_administrator_and_role_client(db_session):
     all_carts = get_list_of_carts(token_antoine, os.getenv("JWT_SECRET"))
     assert len(all_carts) == 1
     assert all_carts[0].id == 1
+        
+
+def test_get_specific_cart(db_session):
+    new_cart = Cart(id=1, created_at=datetime.now(), adress="17 rue du petit Neuilly,59530 Orsinval", user_id="flamant@club-internet.fr", status='processing')
+    created_cart = create_cart_when_not_exists(new_cart)
+    specific_cart = get_specific_cart(1)
+    assert specific_cart.id == 1
+    assert specific_cart.adress == "17 rue du petit Neuilly,59530 Orsinval"
+    assert specific_cart.user_id == "flamant@club-internet.fr"
+
+
+
+def test_get_list_of_cart_items(db_session):
+    new_cart = Cart(id=1, created_at=datetime.now(), adress="17 rue du petit Neuilly,59530 Orsinval", user_id="flamant@club-internet.fr", status='processing')
+    created_cart = create_cart_when_not_exists(new_cart)
+    cartItem = CartItem(id=1, cart_id=1, product_id="prod001", quantity=15)
+    output_information = []
+    new_cart_item = create_cart_item_when_not_exists(cartItem, output_information)
+    cartItem = CartItem(id=2, cart_id=1, product_id="prod002", quantity=25)
+    output_information = []
+    new_cart_item = create_cart_item_when_not_exists(cartItem, output_information)
+    cartItem = CartItem(id=3, cart_id=1, product_id="prod003", quantity=35)
+    output_information = []
+    new_cart_item = create_cart_item_when_not_exists(cartItem, output_information)
+
+    all_cart_items = get_list_of_cart_items(1)
+    assert len(all_cart_items) == 3
+    assert all_cart_items[0].id == 1
+    assert all_cart_items[1].id == 2
+    assert all_cart_items[2].id == 3
         
 '''def get_list_of_carts(token, JWT_SECRET):
     payload = None
