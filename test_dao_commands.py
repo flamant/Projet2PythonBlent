@@ -3,7 +3,7 @@ import pytest
 from datetime import datetime
 from models import User
 from init_db import add_sample_products_and_add_admin_and_client
-from dao_commands import create_cart_item_when_not_exists, create_cart_when_not_exists, get_list_of_carts, get_list_of_cart_items, get_specific_cart
+from dao_commands import create_cart_item_when_not_exists, create_cart_when_not_exists, get_list_of_carts, get_list_of_cart_items, get_specific_cart, modify_command_status
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 import requests
@@ -145,6 +145,20 @@ def test_get_list_of_cart_items(db_session):
     assert all_cart_items[0].id == 1
     assert all_cart_items[1].id == 2
     assert all_cart_items[2].id == 3
+
+def test_modify_command_status(db_session):
+    new_cart = Cart(id=1, created_at=datetime.now(), adress="17 rue du petit Neuilly,59530 Orsinval", user_id="flamant@club-internet.fr", status='processing')
+    created_cart = create_cart_when_not_exists(new_cart)
+    id = 1
+    created_at=datetime.now()
+    status = 'pending'
+    adress = "10 rue du moulin, 59530 Orsinval"
+    user_id = 2
+    cart_modified = modify_command_status(id, created_at, status, adress, user_id)
+    assert cart_modified.id == 1
+    assert cart_modified.status == 'pending'
+    assert cart_modified.adress == "10 rue du moulin, 59530 Orsinval"
+    assert cart_modified.user_id == '2'
         
 '''def get_list_of_carts(token, JWT_SECRET):
     payload = None
