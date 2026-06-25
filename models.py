@@ -4,18 +4,10 @@ from datetime import datetime
 from flask import Flask
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import func
-from sqlalchemy import create_engine
+
 from sqlalchemy.sql import text
 from app import app
 from extensions import db
-
-app = Flask(__name__)
-
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///basic_store.db'
-
-
-engine = create_engine("sqlite:///basic_store.db")
 
 
 class CartItem(db.Model):

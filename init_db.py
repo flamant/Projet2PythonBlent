@@ -9,7 +9,7 @@ hashed_admin = generate_password_hash("admin")
 hashed_antoine = generate_password_hash("antoine")
 
 
-#db.init_app(app)
+
 
 def add_sample_products_and_add_admin_and_client():
     # Créer quelques produits

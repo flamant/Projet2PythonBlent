@@ -1,7 +1,7 @@
 from models import User
 from sqlalchemy.orm.exc import NoResultFound
 from flask import jsonify
-from extension import db
+from extensions import db
 
 def create_user(user):
     if user.__class__.__name__ == 'User':
