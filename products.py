@@ -37,7 +37,6 @@ def getSpecificProduct(id):
 
 @products_bp.route('', methods=["POST"])
 def createNewProduct():
-    print("ca passe1")
     token = request.headers.get("token", "0")
     body = request.get_json()
     id = body.get("id", "")
@@ -56,7 +55,6 @@ def createNewProduct():
     print(role)
     if role == "administrator" and decode_token(token):
         create_product(Product(id=id, name=name, category=category, description=description, price=price, stock=stock))
-        print("ca passe2")
         return jsonify({"message" : "Le produit a bien été créé en base de donnée."}), 401
     else:
         return {"error": "seul un administrateur a le droit de créer un produit et l'utilisateur doit être correctement authentifié."}, 401
@@ -84,7 +82,6 @@ def modifyProduct(id):
 
 @products_bp.route('/<id>', methods=["DELETE"])
 def deleteProduct(id):
-    print("ca passe1")
     token = request.headers.get("token", "0")
     payload = None
     try:
@@ -105,6 +102,5 @@ def deleteProduct(id):
 
 @products_bp.route('/<name>/<price>', methods=["GET"])
 def getFilteredProducts(name, price):
-    print("ca passe1")
     products = get_Filtered_Products(name, price)
     return products

@@ -32,13 +32,10 @@ def create_product(product):
                 db.session.commit()
                 return new_product
             else:
-                print("ca passe11")
                 raise ValueError("Il y a une erreur dans les données envoyée pour créer un nouveau produit.")
         else:
-            print("ca passe12")
             raise ValueError("Le produit est déjà créé.")
     else:
-        print("ca passe13")
         raise ValueError("Il y a une erreur dans les données envoyée pour créer un nouveau produit.")
 
 

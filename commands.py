@@ -14,10 +14,8 @@ command_bp = Blueprint("commands", __name__)
 
 @command_bp.route('', methods=["POST"])
 def createNewCommand():
-    print("ca passe1")
     token = request.headers.get("token", "0")
     if decode_token(token):
-        print("ca passe2")
         payload = None
         try:
             payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
@@ -30,7 +28,6 @@ def createNewCommand():
         n = len(cart_items)
         item = [dict() for x in range(n)]
         number_cart_item=0
-        print("ca passe3")
         for cart_item in cart_items:
             print("number_cart_item="+str(number_cart_item))
             item[number_cart_item]['cart_item_id'] = cart_item['cart_item_id']
@@ -82,12 +79,9 @@ def createNewCommand():
 
 @command_bp.route('', methods=["GET"])
 def getCartList():
-    print("ca passe1")
     token = request.headers.get("token", "0")
     if decode_token(token):
-        print("ca passe2")
         all_carts = get_list_of_carts(token, os.getenv("JWT_SECRET"))
-        print("ca passe3")
         print(all_carts)
         result = []
         for cart in all_carts:
@@ -129,7 +123,6 @@ def getLigneDeCommande(id):
 @command_bp.route('/<id>', methods=["PUT"])
 #"Modifier une commande d'identifiant id (PUT /api/commandes/{id}) - Admin uniquement"
 def ModifyCommandStatus(id):
-    print("ca passe1")
     token = request.headers.get("token", "0")
     body = request.get_json()
     created_at = datetime.datetime.now()
@@ -137,15 +130,12 @@ def ModifyCommandStatus(id):
     adress = body.get("adress")
     user_id = body.get("user_id")
     payload = None
-    print("ca passe2")
     try:
         payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
-        print("ca passe3")
     except jwt.exceptions.InvalidTokenError:
         return jsonify({"error": "le token est non valide."}), 401
     role = payload.get("role") 
     if decode_token(token) and role == 'administrator':
-        print("ca passe4")
         modified_command = modify_command_status(id, created_at, status, adress, user_id)
         print("modified command")
         print(modified_command)

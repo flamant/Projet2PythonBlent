@@ -51,9 +51,7 @@ def create_cart_item_when_not_exists(cartItem, output_information):
 
 
 def create_cart_when_not_exists(cart):
-    print("ca passe1")
     if cart.__class__.__name__ == 'Cart':
-        print("ca passe2")
         cart_id_max = db.session.query(func.max(Cart.id)).scalar()
         if cart_id_max == None:
             cart_id_max = 0
@@ -61,11 +59,9 @@ def create_cart_when_not_exists(cart):
 
         currentDateTime = datetime.now()
         next_max_cart_id = cart_id_max +1
-        print("ca passe3")
         new_cart = Cart(id=next_max_cart_id, created_at=currentDateTime, adress=cart.adress, user_id=cart.user_id, status='processing')
         db.session.merge(new_cart)
         db.session.commit()
-        print("ca passe4")
         print(new_cart)
         return new_cart
     else:
@@ -125,9 +121,7 @@ def get_list_of_cart_items(id):
 def modify_command_status(id, created_at, status, adress, user_id):
     try:
         cart = db.session.query(Cart).filter_by(id=int(id)).one()
-        print("ca passe5")
     except NoResultFound: 
-        print("ca passe6")
         return jsonify({"error": "le cart d'identifiant " + id +" n'existe pas."}), 401
     cart.created_at = created_at
     cart.status = status
@@ -141,6 +135,7 @@ def modify_command_status(id, created_at, status, adress, user_id):
 def get_list_of_carts(token, JWT_SECRET):
     payload = None
     try:
+        print("ca passe2")
         print("token depuis dao_commands")
         print(token)
         print("JWT_SECRET depuis dao_commands")
