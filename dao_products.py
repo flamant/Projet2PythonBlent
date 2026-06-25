@@ -1,8 +1,9 @@
-from models import db, Product
+from models import Product
 from sqlalchemy import or_, and_
 from sqlalchemy import desc, asc, func
 import json
 from flask import jsonify
+from extensions import db
 
 
 def read_products():
@@ -43,7 +44,6 @@ def update_product(product):
     # Récupérer le produit à mettre à jour
     old_product = db.session.query(Product).filter_by(id=product.id).first()
     # Ajouter à la session
-    print(old_product)
     if old_product:
         # Mettre à jour les attributs
         old_product.name = product.name
@@ -79,20 +79,13 @@ def delete_product(product_id):
 # de price et dont le stock est supérieur à 0 (disponible)
 def get_Filtered_Products(name, price):
     products1 = db.session.query(Product).filter(and_(Product.name.contains(name), Product.stock > 0)).all()
-    print("products1")
-    print(products1)
     products2 = db.session.query(Product).filter(Product.stock > 0).order_by(asc(func.abs(Product.price-price)), desc(Product.stock)).all()
-    print("products2")
-    print(products2)
     result = []
     ids = []
     for product in products1:
         result.append(product.to_dict())
         ids.append(product.id)
-    print("result")
-    print(result)
     for product in products2:
         if product.id not in ids:
             result.append(product.to_dict())
-    print(result)
     return result

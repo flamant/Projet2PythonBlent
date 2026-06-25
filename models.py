@@ -6,13 +6,13 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import func
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
-
+from app import app
+from extensions import db
 
 app = Flask(__name__)
 
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///basic_store.db'
-db = SQLAlchemy(app)
 
 
 engine = create_engine("sqlite:///basic_store.db")
@@ -79,8 +79,6 @@ class Cart(db.Model):
     def to_dict(self):        
         return { "id": self.id, "created_at": self.created_at, "user_id": self.user_id, "status": self.status}
 
-
-#Cart.__table__.drop(engine)
 
 class User(db.Model):
     __tablename__ = 'users'

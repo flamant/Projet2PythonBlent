@@ -4,14 +4,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
 hashed_admin = generate_password_hash("admin")
-print("hashed_admin")
-print(hashed_admin)
-print("  ")
+
 
 hashed_antoine = generate_password_hash("antoine")
-print("hashed_antoine")
-print(hashed_antoine)
-print("  ")
+
 
 print("Connexion et génération de token JWT (POST /api/auth/login).")
 print("connection avec (admin@login.fr,admin) (administrator) and generer le token.")

@@ -1,6 +1,7 @@
 import pytest
 from init_db import add_sample_products_and_add_admin_and_client
-from models import app, db
+from extensions import db
+from app import app
 
 
 @pytest.fixture

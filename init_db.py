@@ -1,5 +1,6 @@
 from utils_encoding import hash_password
-from models import db, app
+from extensions import db
+from app import app
 import models
 from models import User, Product
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -8,6 +9,7 @@ hashed_admin = generate_password_hash("admin")
 hashed_antoine = generate_password_hash("antoine")
 
 
+#db.init_app(app)
 
 def add_sample_products_and_add_admin_and_client():
     # Créer quelques produits
@@ -32,8 +34,6 @@ def add_sample_products_and_add_admin_and_client():
 
         # Merge évite les doublons si le script est relancé
     for user in users:
-        print("user")
-        print(user)
         db.session.merge(user)
     
     # Commit pour sauvegarder les changements dans la base de données

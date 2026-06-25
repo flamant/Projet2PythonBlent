@@ -4,21 +4,19 @@ from dao_users import create_user, get_user, get_list_of_users
 from utils_encoding import decode_token, hash_password
 import jwt
 from datetime import datetime, timedelta
-from models import db, app, User
+from models import User
+from extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
+from app import app
 
 users_bp = Blueprint("users", __name__)
 
 hashed_admin = generate_password_hash("admin")
-print("hashed_admin")
-print(hashed_admin)
-print("  ")
+
 
 hashed_antoine = generate_password_hash("antoine")
-print("hashed_antoine")
-print(hashed_antoine)
-print("  ")
+
 
 
 @users_bp.route('/users/<username>', methods=["GET"])
@@ -50,25 +48,16 @@ def register_utilisateur():
     passwordCaller = body.get("password_caller", "0")
     
     user = get_user(id_requester)
-    print("user")
-    print(user)
-    print("passe2")
     
     pwhash = user.password
-    print(check_password_hash(pwhash, passwordCaller))
-    #if check_password_hash(pwhash, password):
-    # si l'appelant existe en base de donnée
+
     if (check_password_hash(pwhash, passwordCaller) and createAdministrator) or createClient:
-        print("passe3")
         if (user.administrator or (user.client and createClient)):
-            print("passe4")
             password= generate_password_hash(password)
             create_user(User(id=id, password=password, firstName=firstName, lastName=lastName, client=createClient, administrator=createAdministrator))
         else:
-            print("passe5")
             raise ValueError("L'utilisateur n'a pas le droit de créer un tel compte")
     else:
-        print("passe6")
         raise ValueError("L'appelant n'existe pas en base ou le mot de passe est incorrect")
     return jsonify({"message": f"Compte cree pour id={id}"}), 201
 
@@ -81,14 +70,9 @@ def connection_and_generate_token():
     user = get_user(id)
     pwhash = user.password
     if check_password_hash(pwhash, password):
-        print("user")
-        print(user)
+
         
         if user.administrator:
-            print(os.getenv("JWT_SECRET"))
-            print(os.environ.get("JWT_SECRET"))
-            print(str(datetime.utcnow() + timedelta(hours=1)))
-            print(datetime.utcnow() + timedelta(hours=1))
 
             token = jwt.encode(
                 {
@@ -109,7 +93,6 @@ def connection_and_generate_token():
                 os.getenv("JWT_SECRET"),
                 algorithm="HS256"
                 )
-        print(token)
         data = {"token": token }
         return jsonify(data),200
     else:
@@ -119,8 +102,6 @@ def connection_and_generate_token():
 @users_bp.route('/users', methods=["GET"])
 def getListOfUsers():
     token = request.headers.get("token", "0")
-    print("token")
-    print(token)
     try:
         payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
     except jwt.exceptions.InvalidTokenError:

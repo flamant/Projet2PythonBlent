@@ -51,8 +51,6 @@ def createNewProduct():
     except jwt.exceptions.InvalidTokenError:
         return jsonify({"error": "le token est non valide."}), 401
     role = payload.get("role")
-    print("role")
-    print(role)
     if role == "administrator" and decode_token(token):
         create_product(Product(id=id, name=name, category=category, description=description, price=price, stock=stock))
         return jsonify({"message" : "Le produit a bien été créé en base de donnée."}), 401
@@ -89,10 +87,6 @@ def deleteProduct(id):
     except:
         return jsonify({"error": "le token est non valide."}), 401
     role = payload.get("role")
-    print("role")
-    print(role)
-    print("decode_token(token)")
-    print(decode_token(token))
     if role == "administrator" and decode_token(token):
         delete_product(id)
         return jsonify({"message" : "Le produit a bien été supprimé en base de donnée."}), 200

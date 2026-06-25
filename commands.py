@@ -5,8 +5,9 @@ from dao_commands import create_cart_when_not_exists, create_cart_item_when_not_
 import jwt
 import os
 import json
-from models import Cart, CartItem, db
+from models import Cart, CartItem
 import datetime
+from extensions import db
 
 command_bp = Blueprint("commands", __name__)
 
@@ -29,7 +30,6 @@ def createNewCommand():
         item = [dict() for x in range(n)]
         number_cart_item=0
         for cart_item in cart_items:
-            print("number_cart_item="+str(number_cart_item))
             item[number_cart_item]['cart_item_id'] = cart_item['cart_item_id']
             item[number_cart_item]['product_id'] = cart_item['product_id']
             item[number_cart_item]['quantity'] = cart_item['quantity']
@@ -44,25 +44,16 @@ def createNewCommand():
         output_information = []
         while i < number_cart_item:
             try:
-                print("item[i]['cart_item_id']="+str(item[i]['cart_item_id']))
                 item[i] = db.session.query(CartItem).filter_by(id=item[i]['cart_item_id']).one()
                 output_information.append("")
-                print(item[i])
             except NoResultFound:
                 print("item[i]['cart_item_id']="+str(item[i]['cart_item_id'])+",  cart_id="+str(cart_id)+",  product_id="+str(item[i]['product_id'])+",  quantity="+str(item[i]['quantity']))
                 item[i] = create_cart_item_when_not_exists(CartItem(id=item[i]['cart_item_id'], cart_id=cart_id, product_id=item[i]['product_id'], quantity=item[i]['quantity']), output_information)
-                print(item[i])
             i += 1
             
-        a = []  
-        print("range(len(item))") 
-        print(range(len(item)))    
+        a = []    
         for i in range(len(item)):
-            print("i") 
-            print(i)
             a.append({"cart_item_id": item[i].id, "product_id" : item[i].product_id, "quantity": item[i].quantity, "comments": output_information[i]})
-            print("a") 
-            print(a)
 
         print(output_information)
         result = {
@@ -70,7 +61,6 @@ def createNewCommand():
                 'user_id': cart.user_id,
                 'cart_items': a
                }
-        print(result)
         return {"message": "l'administrateur a bien créé cette commande."}, 200
     else:
         return {"error": "l'utilisateur doit être correctement authentifié."}, 406
@@ -82,13 +72,9 @@ def getCartList():
     token = request.headers.get("token", "0")
     if decode_token(token):
         all_carts = get_list_of_carts(token, os.getenv("JWT_SECRET"))
-        print(all_carts)
         result = []
         for cart in all_carts:
-            print("json.dumps(cart.to_dict())")
             result.append(json.dumps(cart.to_dict(), indent=4, sort_keys=True, default=str))
-        print("result")
-        print(result)
         return result
     return {"error": "Jeton d'accès invalide."}, 401
 
@@ -99,8 +85,6 @@ def getSpecificCommand(id):
     token = request.headers.get("token", "0")
     if decode_token(token):
         cart = get_specific_cart(id)
-        print("command")
-        print(cart)
         return json.dumps(cart.to_dict(), indent=4, sort_keys=True, default=str)
     return {"error": "Jeton d'accès invalide."}, 401
 
@@ -112,10 +96,7 @@ def getLigneDeCommande(id):
         all_cart_items = get_list_of_cart_items(id)
         result = []
         for cart_item in all_cart_items:
-            print("json.dumps(cart_item.to_dict())")
             result.append(json.dumps(cart_item.to_dict()))
-        print("result")
-        print(result)
         return result
     return {"error": "Jeton d'accès invalide."}, 401
 
@@ -137,7 +118,5 @@ def ModifyCommandStatus(id):
     role = payload.get("role") 
     if decode_token(token) and role == 'administrator':
         modified_command = modify_command_status(id, created_at, status, adress, user_id)
-        print("modified command")
-        print(modified_command)
         return json.dumps(modified_command.to_dict(), indent=4, sort_keys=True, default=str)
     return {"error": "Jeton d'accès invalide."}, 401

@@ -1,4 +1,5 @@
-from models import db, Product, CartItem, Cart
+from models import Product, CartItem, Cart
+from extensions import db
 import pytest
 from datetime import datetime
 from models import User
@@ -28,7 +29,6 @@ json={
 print("le statut de la requête est " + str(req.status_code))
 token = req.json().get("token")
 
-#os.environ["token_admin"] = token
 token_admin = os.environ.get("token_admin", token)
 
 print("Connexion et génération de token JWT (POST /api/auth/login).")
@@ -85,9 +85,6 @@ def test_create_cart_when_not_exists_when_wrong_argument(db_session):
 
 def test_get_list_of_carts_when_invalid_token(db_session):
     with pytest.raises(ValueError, match="le token est non valide."):
-        print("test_get_list_of_carts_when_invalid_token")
-        print("os.getenv(\"JWT_SECRET\")")
-        print(os.getenv("JWT_SECRET"))
         get_list_of_carts("abcdef", os.getenv("JWT_SECRET"))
 
 def test_get_list_of_carts_when_role_administrator_and_role_client(db_session):
@@ -97,11 +94,6 @@ def test_get_list_of_carts_when_role_administrator_and_role_client(db_session):
     # flamant@club-internet.fr create a cart
     new_cart = Cart(id=1, created_at=datetime.now(), adress="17 rue du petit Neuilly,59530 Orsinval", user_id="flamant@club-internet.fr", status='processing')
     created_cart = create_cart_when_not_exists(new_cart)
-    print("token_admin")
-    print(token_admin)
-    print(os.environ.get("token_admin"))
-    print("JWT_SECRET")
-    print(os.environ.get("JWT_SECRET"))
     all_carts = get_list_of_carts(token_admin, os.environ.get("JWT_SECRET"))
     #all_carts = get_list_of_carts(os.getenv("token_admin"), os.getenv("JWT_SECRET"))
     assert len(all_carts) == 2
@@ -109,7 +101,6 @@ def test_get_list_of_carts_when_role_administrator_and_role_client(db_session):
     assert all_carts[1].id == 2
     ln = Cart.query.delete()
     db.session.commit()
-    print("ln=" + str(ln))
     new_cart = Cart(id=1, created_at=datetime.now(), adress="17 rue du petit Neuilly,59530 Orsinval", user_id="flamant@club-internet.fr", status='processing')
     created_cart = create_cart_when_not_exists(new_cart)
     all_carts = get_list_of_carts(token_antoine, os.getenv("JWT_SECRET"))
@@ -160,33 +151,3 @@ def test_modify_command_status(db_session):
     assert cart_modified.adress == "10 rue du moulin, 59530 Orsinval"
     assert cart_modified.user_id == '2'
         
-'''def get_list_of_carts(token, JWT_SECRET):
-    payload = None
-    try:
-        print("ca passe1")
-        print("token")
-        print(token)
-        print("JWT_SECRET")
-        print(JWT_SECRET)
-        payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
-    except jwt.exceptions.InvalidTokenError:
-        return jsonify({"error": "le token est non valide."}), 401
-    user_id = payload.get("user") 
-    role = payload.get("role") 
-    print("user_id=" + str(user_id))
-    # Récupérer tous les carts
-    all_carts = db.session.query(Cart).all()
-    print("role="+str(role))
-    if role == 'administrator':
-        print("role administrateur")
-        print("\nTous les carts interrogé par un administrateur:")
-        all_carts = db.session.query(Cart).all()
-    else:
-        print("role client"+str(user_id))
-        print("\nTous les carts interrogé par un client:")
-        all_carts = db.session.query(Cart).filter_by(user_id=user_id).all()
-
-    
-    for cart in all_carts:
-        print(cart) 
-    return  all_carts'''

@@ -1,5 +1,6 @@
 from dao_products import read_products, read_specific_product, create_product, update_product, delete_product, get_Filtered_Products
-from models import db, Product
+from models import Product
+from extensions import db
 import pytest
 from models import User
 from init_db import add_sample_products_and_add_admin_and_client
