@@ -21,16 +21,23 @@ Une erreur d’import bloquait le démarrage de l’application (`ImportError: c
   executer git clone https://github.com/flamant/Projet2PythonBlent.git
 #contenu du projet
   - sous le répertoire instance on trouve la base de donnée basic_store.db
-  - app1.py fichier où on défini les blueprint et le démarrage du serveur
+  - app.py fichier où on défini app = Flask(__name__) et on initialise app dans la base
+  - commands.py où on definit tous les end point des commandes
+  - conftest.py où on définit une fixture pour les tests unitaires (initialisation BDD et suppression des données après avoir utilisé db dans les tests)
+  - dao_commands.py est la couche d'interaction avec la base de donnée pour la table carts
+  - dao_products.py est la couche d'interaction avec la base de donnée pour la table products
   - dao_users.py est la couche d'interaction avec la base de donnée pour la table users
+  - extensions.py où on définit la BDD
   - init_db.py script d'initialisation de la base de donnée 
-  - metier_users.py fonction métier pour la table users
+  - install_libraries.sh, fichier Unix où on importe les librairies python
+  - main.py fichier de démarage du serveur
   - models.py,  definition des tables et classes de l'application
-  - partie2Interrogation.py , script d'interrogation des API de l'application
-  - preliminaire.txt, 2 ligne à executer avant de charger les librairies python
+  - preliminaire.txt 2 lignes à executer pour créer un environnement de travail
   - products.py, endpoints de la table products
   - README.md, il contient la documentation du projet : installation, utilisation, roadmap, licence, etc.
   - run_unix.sh, scripts de chargement des librairies python
+  - suite_appel_api.py , script d'interrogation des API de l'application
+  - test_dao_commands.py, test_dao_products.py, test_dao_users.py, 3 fichiers de tests unitaires pour les commandes, les produits et les users
   - users.py, endpoints de la table users
   - utils_encoding.py, fonctions utilitaires
 
