@@ -49,3 +49,93 @@ Une erreur d’import bloquait le démarrage de l’application (`ImportError: c
   - ouvrir une autre fenêtre de terminal 
   - copier et executer les 2 lignes du fichier preliminaire.txt
   - executer dans cette fenêtre python suite_appel_api.py
+
+# les end point de users
+  - Connexion et génération de token JWT (POST /api/auth/login).
+  body : json={
+    "id_caller": "admin@login.fr",
+    "password_caller": "admin"
+  }
+  renvoie le token: token = req.json().get("token")
+  - obtenir la liste des utilisateur interrogé par un administrateur (GET /api/users). Avec token comme moyen d'authentification dans le header
+  renvoie la liste des utilisateur. Uniquement l'administrateur peut avoir cette liste
+  - Inscription d'un nouvel utilisateur (POST /api/auth/register).
+  body: json={
+    'id_caller': "admin@login.fr", identifiant de l'appelant
+    'password_caller': "admin", mot de passe de l'appelant
+    'id': "administrator@admin.fr", identifiant nouvel utilisateur
+    'password': "secret", mot de passe nouvel utilisateur
+    'firstName': "adminFirstName", prenom nouvel utilisateur
+    'lastName': "adminLastName", nom du nouvel utilisateur
+    'client': False, booleen pour savoir si c'est un client normal
+    'administrator':True, booleen pour savoir si c'est un administrateur
+  }
+  seul l'adiminstrateur peut créer un administrateur
+  - Profil d'un  utilisateur (GET /api/users/<username>). Avec token comme moyen d'authentification dans le header
+  renvoie les informations de l'utilisateur
+
+# les end point de products
+- liste des produits (GET /api/products.). Avec token comme moyen d'authentification dans le header
+  Renvoie la liste de produits
+- Afficher pproduits spécifique (GET /api/products/id.) Avec token comme moyen d'authentification dans le header
+  Renvoie des informations sur le produit
+- créer un nouveau produit (POST /api/products.) Avec token comme moyen d'authentification dans le header
+  body: json={
+    "id" : "prod004",
+    "name" : "Lucid Clavier sans fil",
+    "category" : "clavier", 
+    "description" : "Clavier portatif",
+    "price" : 140,
+    "stock" : 20
+})
+Seulement accessible pour un administrateur
+- modifier un produit (POST /api/products/<id>. Avec token comme moyen d'authentification dans le header
+  body json={
+    "name" : "Lucid Clavier sans fil modifié",
+    "description" : "Clavier portatif modifié",
+    "price" : 145,
+    "stock" : 25
+})
+Seulement accessible pour un administrateur
+- Suprimer le produits spécifique qui a été modifié (DELETE /api/products/<id>.). Avec token comme moyen d'authentification dans le header
+Seulement accessible pour un administrateur
+- Rechercher produits par nom, prix, disponibilité (GET /api/products/name/price.
+Renvoie le resultat de la recherche
+
+
+# les end point de commands
+- Créer une nouvelle commande (POST /api/commandes) - Avec token comme moyen d'authentification dans le header
+  body: json={
+    'cart_id': 1,
+    'cart_items': [
+        {
+            'cart_item_id': 1,
+            'product_id': 'prod001',
+            'quantity': 10
+        },
+        {
+            'cart_item_id': 2,
+            'product_id': 'prod002',
+            'quantity': 20           
+        },
+        {
+            'cart_item_id': 3,
+            'product_id': 'prod003',
+            'quantity': 30
+        }
+    ]
+})
+Si le produits est en quantité suffisante, on puise dans les stock de produits sinon on met tout ce qui est en stock dans la commande
+- Afficher la liste de toutes les commandes si administrateur (GET /api/commandes) sinon la liste des commandes créé par l'utilisateur (référencé par token)- Avec token comme moyen d'authentification dans le header
+Renvoie la liste de toutes les commandes si administrateur, sinon seulement la liste des commandes du client si client
+- Afficher la commande spécifique d'identifiant id (GET /api/commandes/<id>) Avec token comme moyen d'authentification dans le header
+Renvoie les informations de la commande
+- Afficher les lignes (CartItem) de la commande spécifique d'identifiant id (GET /api/commandes)- Avec token comme moyen d'authentification dans le header.
+Renvoie les ligens de commande (cartItem)
+- Modifier un  cart  de la commande spécifique d'identifiant id (PUT /api/commandes). Avec token comme moyen d'authentification dans le header.
+Uniquement accessible par un administrateur
+body : json={
+    "status" : "pending",
+    "adress" : "5 rue du moulin, 59530 Orsinval",
+    "user_id" : "flamant@club-internet.fr"
+})
