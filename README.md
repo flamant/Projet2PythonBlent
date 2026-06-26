@@ -38,7 +38,7 @@ Une erreur d’import bloquait le démarrage de l’application (`ImportError: c
   - après l'installation du projet se mettre dans le répertoire Projet2PythonBlent
   - copier les 2 lignes du fichier preliminaire.txt et les executer
   - executer run_unix.sh
-  - executer flask --app app1 run
+  - executer flask --app main run
   - ouvrir une autre fenêtre de terminal 
   - copier et executer les 2 lignes du fichier preliminaire.txt
-  - executer dans cette fenêtre python partie2Interrogation.py
+  - executer dans cette fenêtre python suite_appel_api.py

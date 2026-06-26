@@ -36,7 +36,6 @@ def user_profile(username):
 
 @users_bp.route('/auth/register', methods=["POST"])
 def register_utilisateur():
-    print('passe1')
     body = request.get_json()
     id = body.get("id", "")
     password = body.get("password")

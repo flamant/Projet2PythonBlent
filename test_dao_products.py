@@ -14,29 +14,30 @@ def test_read_products(db_session):
 
 
 def test_create_product(db_session):
-    new_product = create_product(Product(id='prod001', name='Azus TUF F15', category='computer', description='PC Portable Gamer', price=899, stock=10))
-    assert new_product.id == "prod001"
-    assert new_product.name == "Azus TUF F15"
+    
+    new_product = create_product(Product(id='prod004', name='Souris avec fil', category='souris', description='Souris avec fil', price=62, stock=15))
+    assert new_product.id == "prod004"
+    assert new_product.name == "Souris avec fil"
 
 def test_create_product_with_wrong_argument(db_session):
     with pytest.raises(ValueError, match="Il y a une erreur dans les données envoyée pour créer un nouveau produit."):
         create_product(User(id='admin@login.fr', password="test", firstName="firstName1", lastName="lastName1", client=False, administrator=True))
 
 def test_create_product_when_product_already_created(db_session):
-    create_product(Product(id='prod001', name='Azus TUF F15', category='computer', description='PC Portable Gamer', price=899, stock=10))
+    #create_product(Product(id='prod001', name='Azus TUF F15', category='computer', description='PC Portable Gamer', price=899, stock=10))
     with pytest.raises(ValueError, match="Le produit est déjà créé."):
         create_product(Product(id='prod001', name='Azus TUF F15', category='computer', description='PC Portable Gamer', price=899, stock=10))
 
 
 def test_read_specific_product(db_session):
-    create_product(Product(id='prod001', name='Azus TUF F15', category='computer', description='PC Portable Gamer', price=899, stock=10))
+    #create_product(Product(id='prod001', name='Azus TUF F15', category='computer', description='PC Portable Gamer', price=899, stock=10))
     specific_product = read_specific_product("prod001")
 
     assert specific_product.id == "prod001"
     assert specific_product.name == "Azus TUF F15"
 
 def test_update_product(db_session):
-    create_product(Product(id='prod001', name='Azus TUF F15', category='computer', description='PC Portable Gamer', price=899, stock=10))
+    create_product(Product(id='prod004', name='Souris avec fil', category='souris', description='Souris avec fil', price=62, stock=15))
     product = Product(id='prod001', name='Azus TUF F15 modifié', category='computer modifié', description='PC Portable Gamer modifié', price=845, stock=20)
     new_product = update_product(product)
 

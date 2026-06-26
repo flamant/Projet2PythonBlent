@@ -1,5 +1,5 @@
 import pytest
-
+from extensions import db
 from dao_users import create_user, get_user, get_list_of_users
 from models import CartItem, User
 
@@ -114,6 +114,8 @@ def test_get_user_not_found(db_session):
         get_user("inconnu@mail.fr")
 
 def test_get_all_user(db_session):
+    ln = User.query.delete()
+    db.session.commit()
     user = User(
         id="get@mail.fr",
         password="secret",

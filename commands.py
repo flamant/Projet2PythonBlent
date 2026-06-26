@@ -38,7 +38,7 @@ def createNewCommand():
         try:
             cart = db.session.query(Cart).filter_by(id=cart_id).one()
         except NoResultFound:
-            cart = create_cart_when_not_exists(Cart(id=1, created_at=datetime.datetime.now(), user_id=user_id, status='processing'))
+            cart = create_cart_when_not_exists(Cart(id=1, created_at=datetime.datetime.now(), adress="17 rue du petit Neuilly, 59530 Orsinval", user_id=user_id, status='processing'))
 
         i = 0
         output_information = []
@@ -47,7 +47,6 @@ def createNewCommand():
                 item[i] = db.session.query(CartItem).filter_by(id=item[i]['cart_item_id']).one()
                 output_information.append("")
             except NoResultFound:
-                print("item[i]['cart_item_id']="+str(item[i]['cart_item_id'])+",  cart_id="+str(cart_id)+",  product_id="+str(item[i]['product_id'])+",  quantity="+str(item[i]['quantity']))
                 item[i] = create_cart_item_when_not_exists(CartItem(id=item[i]['cart_item_id'], cart_id=cart_id, product_id=item[i]['product_id'], quantity=item[i]['quantity']), output_information)
             i += 1
             
@@ -55,7 +54,6 @@ def createNewCommand():
         for i in range(len(item)):
             a.append({"cart_item_id": item[i].id, "product_id" : item[i].product_id, "quantity": item[i].quantity, "comments": output_information[i]})
 
-        print(output_information)
         result = {
                 'cart_id': cart.id,
                 'user_id': cart.user_id,

@@ -79,7 +79,6 @@ def get_specific_cart(id):
         cart = db.session.query(Cart).filter_by(id=int(id)).one()
     except NoResultFound: 
         return jsonify({"error": "le cart d'identifiant " + id +" n'existe pas."}), 401
-    print(cart) 
     return cart    
 
 
