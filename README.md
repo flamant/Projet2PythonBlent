@@ -53,7 +53,7 @@ Une erreur d’import bloquait le démarrage de l’application (`ImportError: c
 # les end point de users
   - Connexion et génération de token JWT (POST /api/auth/login).
   body : json={
-    "id_caller": "admin@login.fr",
+    "email_caller": "admin@login.fr",
     "password_caller": "admin"
   }
   renvoie le token: token = req.json().get("token")
@@ -61,7 +61,7 @@ Une erreur d’import bloquait le démarrage de l’application (`ImportError: c
   renvoie la liste des utilisateur. Uniquement l'administrateur peut avoir cette liste
   - Inscription d'un nouvel utilisateur (POST /api/auth/register).
   body: json={
-    'id_caller': "admin@login.fr", identifiant de l'appelant
+    'email_caller': "admin@login.fr", identifiant de l'appelant
     'password_caller': "admin", mot de passe de l'appelant
     'id': "administrator@admin.fr", identifiant nouvel utilisateur
     'password': "secret", mot de passe nouvel utilisateur
@@ -71,15 +71,15 @@ Une erreur d’import bloquait le démarrage de l’application (`ImportError: c
     'administrator':True, booleen pour savoir si c'est un administrateur
   }
   seul l'adiminstrateur peut créer un administrateur
-  - Profil d'un  utilisateur (GET /api/users/<username>). Avec token comme moyen d'authentification dans le header
+  - Profil d'un  utilisateur (GET /api/users/<email>). Avec token comme moyen d'authentification dans le header
   renvoie les informations de l'utilisateur
 
 # les end point de products
-- liste des produits (GET /api/products.). Avec token comme moyen d'authentification dans le header
+- liste des produits (GET /api/produits.). Avec token comme moyen d'authentification dans le header
   Renvoie la liste de produits
-- Afficher pproduits spécifique (GET /api/products/id.) Avec token comme moyen d'authentification dans le header
+- Afficher pproduits spécifique (GET /api/produits/id.) Avec token comme moyen d'authentification dans le header
   Renvoie des informations sur le produit
-- créer un nouveau produit (POST /api/products.) Avec token comme moyen d'authentification dans le header
+- créer un nouveau produit (POST /api/produits.) Avec token comme moyen d'authentification dans le header
   body: json={
     "id" : "prod004",
     "name" : "Lucid Clavier sans fil",
@@ -89,7 +89,7 @@ Une erreur d’import bloquait le démarrage de l’application (`ImportError: c
     "stock" : 20
 })
 Seulement accessible pour un administrateur
-- modifier un produit (POST /api/products/<id>. Avec token comme moyen d'authentification dans le header
+- modifier un produit (POST /api/produits/<id>. Avec token comme moyen d'authentification dans le header
   body json={
     "name" : "Lucid Clavier sans fil modifié",
     "description" : "Clavier portatif modifié",
@@ -97,9 +97,9 @@ Seulement accessible pour un administrateur
     "stock" : 25
 })
 Seulement accessible pour un administrateur
-- Suprimer le produits spécifique qui a été modifié (DELETE /api/products/<id>.). Avec token comme moyen d'authentification dans le header
+- Suprimer le produits spécifique qui a été modifié (DELETE /api/produits/<id>.). Avec token comme moyen d'authentification dans le header
 Seulement accessible pour un administrateur
-- Rechercher produits par nom, prix, disponibilité (GET /api/products/name/price.
+- Rechercher produits par nom, prix, disponibilité (GET /api/produits/name/price.
 Renvoie le resultat de la recherche
 
 

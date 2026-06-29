@@ -21,7 +21,7 @@ def test_identifiant_not_provided(x, y):
     with pytest.raises(
         ValueError, match="L'identifiant et le mot de passe doivent être renseigné."
     ):
-        create_user(User(id=x, password=y, client=True, administrator=False))
+        create_user(User(email=x, password=y, client=True, administrator=False))
 
 
 @pytest.mark.parametrize(
@@ -37,7 +37,7 @@ def test_client_or_administrator(client, administrator):
     ):
         create_user(
             User(
-                id="admin",
+                email="admin",
                 password="password",
                 firstName="firstName",
                 lastName="lastName",
@@ -49,7 +49,7 @@ def test_client_or_administrator(client, administrator):
 
 def test_user_is_created(db_session):
     user = User(
-        id="test@mail.fr",
+        email="test@mail.fr",
         password="secret",
         firstName="firstName",
         lastName="lastName",
@@ -58,7 +58,7 @@ def test_user_is_created(db_session):
     )
     create_user(user)
 
-    found = db_session.session.query(User).filter_by(id="test@mail.fr").one()
+    found = db_session.session.query(User).filter_by(email="test@mail.fr").one()
     assert found.id == "test@mail.fr"
     assert found.password == "secret"
     assert found.firstName == "firstName"
@@ -69,7 +69,7 @@ def test_user_is_created(db_session):
 
 def test_user_already_exists(db_session):
     user = User(
-        id="dup@mail.fr",
+        email="dup@mail.fr",
         password="secret",
         firstName="firstName",
         lastName="lastName",
@@ -80,7 +80,7 @@ def test_user_already_exists(db_session):
 
     response, status_code  = create_user(
         User(
-            id="dup@mail.fr",
+            email="dup@mail.fr",
             password="other",
             firstName="firstName",
             lastName="lastName",
@@ -95,7 +95,7 @@ def test_user_already_exists(db_session):
 
 def test_get_user(db_session):
     user = User(
-        id="get@mail.fr",
+        email="get@mail.fr",
         password="secret",
         firstName="firstName",
         lastName="lastName",
@@ -117,7 +117,7 @@ def test_get_all_user(db_session):
     ln = User.query.delete()
     db.session.commit()
     user = User(
-        id="get@mail.fr",
+        email="get@mail.fr",
         password="secret",
         firstName="firstName",
         lastName="lastName",
@@ -125,7 +125,7 @@ def test_get_all_user(db_session):
         administrator=True,
     )
     user1 = User(
-        id="get1@mail.fr",
+        email="get1@mail.fr",
         password="secret1",
         firstName="firstName1",
         lastName="lastName1",

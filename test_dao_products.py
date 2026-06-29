@@ -21,7 +21,7 @@ def test_create_product(db_session):
 
 def test_create_product_with_wrong_argument(db_session):
     with pytest.raises(ValueError, match="Il y a une erreur dans les données envoyée pour créer un nouveau produit."):
-        create_product(User(id='admin@login.fr', password="test", firstName="firstName1", lastName="lastName1", client=False, administrator=True))
+        create_product(User(email='admin@login.fr', password="test", firstName="firstName1", lastName="lastName1", client=False, administrator=True))
 
 def test_create_product_when_product_already_created(db_session):
     #create_product(Product(id='prod001', name='Azus TUF F15', category='computer', description='PC Portable Gamer', price=899, stock=10))

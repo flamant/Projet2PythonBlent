@@ -19,15 +19,15 @@ hashed_antoine = generate_password_hash("antoine")
 
 
 
-@users_bp.route('/users/<username>', methods=["GET"])
-def user_profile(username):
-    id_requester = username
+@users_bp.route('/users/<email>', methods=["GET"])
+def user_profile(email):
+    id_requester = email
     user = get_user(id_requester)
     token = request.headers.get("token", "0")
     if decode_token(token):
     # si l'utilisateur passé dans le header existe bien en base   
-        user = get_user(username)
-        data = {"id": user.id, "password":user.password, "firstName":user.firstName, "lastName":user.lastName, "client":user.client, "administrator":user.administrator }
+        user = get_user(email)
+        data = {"email": user.email, "password":"XXXXX", "firstName":user.firstName, "lastName":user.lastName, "client":user.client, "administrator":user.administrator }
         return jsonify(data),200
     else:
         raise ValueError("L'appelant n'est pas correctement authentifié")
@@ -37,13 +37,13 @@ def user_profile(username):
 @users_bp.route('/auth/register', methods=["POST"])
 def register_utilisateur():
     body = request.get_json()
-    id = body.get("id", "")
+    email = body.get("email", "")
     password = body.get("password")
     firstName = body.get("firstName")
     lastName = body.get("lastName")
     createClient = body.get("client")
     createAdministrator = body.get("administrator")
-    id_requester = body.get("id_caller", "0")
+    id_requester = body.get("email_caller", "0")
     passwordCaller = body.get("password_caller", "0")
     
     user = get_user(id_requester)
@@ -53,7 +53,7 @@ def register_utilisateur():
     if (check_password_hash(pwhash, passwordCaller) and createAdministrator) or createClient:
         if (user.administrator or (user.client and createClient)):
             password= generate_password_hash(password)
-            create_user(User(id=id, password=password, firstName=firstName, lastName=lastName, client=createClient, administrator=createAdministrator))
+            create_user(User(email=email, password=password, firstName=firstName, lastName=lastName, client=createClient, administrator=createAdministrator))
         else:
             raise ValueError("L'utilisateur n'a pas le droit de créer un tel compte")
     else:
@@ -64,9 +64,9 @@ def register_utilisateur():
 @users_bp.route('/auth/login', methods=["POST"])
 def connection_and_generate_token():
     body = request.get_json()
-    id = body.get("id_caller", "0")
+    email = body.get("email_caller", "0")
     password = body.get("password_caller", "0")
-    user = get_user(id)
+    user = get_user(email)
     pwhash = user.password
     if check_password_hash(pwhash, password):
 
@@ -76,7 +76,7 @@ def connection_and_generate_token():
             token = jwt.encode(
                 {
                     "exp": datetime.utcnow() + timedelta(hours=1),
-                    "user": id,
+                    "user": email,
                     "role": "administrator"
                 },
                 os.getenv("JWT_SECRET"),
@@ -86,7 +86,7 @@ def connection_and_generate_token():
             token = jwt.encode(
                 {
                     "exp": datetime.utcnow() + timedelta(hours=1),
-                    "user": id,
+                    "user": email,
                     "role": "client"
                 },
                 os.getenv("JWT_SECRET"),

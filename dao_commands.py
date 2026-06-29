@@ -5,6 +5,7 @@ from datetime import datetime
 from sqlalchemy import func
 import jwt
 from extensions import db
+from flask import jsonify
 
 
 
@@ -47,7 +48,7 @@ def create_cart_when_not_exists(cart):
 
         currentDateTime = datetime.now()
         next_max_cart_id = cart_id_max +1
-        new_cart = Cart(id=next_max_cart_id, created_at=currentDateTime, adress=cart.adress, user_id=cart.user_id, status='processing')
+        new_cart = Cart(id=next_max_cart_id, created_at=currentDateTime, adress=cart.adress, user_id=cart.user_id, status='pending')
         db.session.merge(new_cart)
         db.session.commit()
         return new_cart
@@ -71,6 +72,8 @@ def get_list_of_carts(token, JWT_SECRET):
         all_carts = db.session.query(Cart).filter_by(user_id=user_id).all()
 
     return  all_carts
+
+
 
 
 def get_specific_cart(id):
@@ -101,19 +104,3 @@ def modify_command_status(id, created_at, status, adress, user_id):
     db.session.commit()
     return cart       
 
-def get_list_of_carts(token, JWT_SECRET):
-    payload = None
-    try:
-        payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
-    except jwt.exceptions.InvalidTokenError:
-        raise ValueError("le token est non valide.")
-    user_id = payload.get("user") 
-    role = payload.get("role") 
-    # Récupérer tous les carts
-    all_carts = db.session.query(Cart).all()
-    if role == 'administrator':
-        all_carts = db.session.query(Cart).all()
-    else:
-        all_carts = db.session.query(Cart).filter_by(user_id=user_id).all()
-
-    return  all_carts

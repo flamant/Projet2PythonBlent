@@ -5,10 +5,10 @@ from extensions import db
 
 def create_user(user):
     if user.__class__.__name__ == 'User':
-        if len(user.id) > 0 and len(user.password) > 0:
+        if len(user.email) > 0 and len(user.password) > 0:
             if (user.client and not user.administrator) or (user.administrator and not user.client):
                 try:
-                    db.session.query(User).filter_by(id=user.id).one()
+                    db.session.query(User).filter_by(email=user.email).one()
                     return jsonify({"error" : "L'utilisateur existe déjà en base de donnée."}), 401
                 except NoResultFound as e:
                     # Ajouter à la session
@@ -25,7 +25,7 @@ def create_user(user):
 
 def get_user(id):
     try:
-        user = db.session.query(User).filter_by(id=id).one()
+        user = db.session.query(User).filter_by(email=id).one()
     except NoResultFound:
         raise ValueError("L'utilisateur n'est pas enregistré en base.")
     return user

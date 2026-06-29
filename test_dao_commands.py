@@ -23,7 +23,7 @@ print("connection avec (admin@login.fr,admin) (administrator) and generer le tok
 print("---------------------------------------------------------------------")
 req = requests.post("http://127.0.0.1:5000/api/auth/login",
 json={
-    "id_caller": "admin@login.fr",
+    "email_caller": "admin@login.fr",
     "password_caller": "admin"
 })
 print("le statut de la requête est " + str(req.status_code))
@@ -36,7 +36,7 @@ print("connection avec (admin@login.fr,admin) (administrator) and generer le tok
 print("---------------------------------------------------------------------")
 req = requests.post("http://127.0.0.1:5000/api/auth/login",
 json={
-    "id_caller": "flamant@club-internet.fr",
+    "email_caller": "flamant@club-internet.fr",
     "password_caller": "antoine"
 })
 print("le statut de la requête est " + str(req.status_code))

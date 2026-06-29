@@ -14,7 +14,7 @@ print("connection avec (admin@login.fr,admin) (administrator) and generer le tok
 print("---------------------------------------------------------------------")
 req = requests.post("http://127.0.0.1:5000/api/auth/login",
 json={
-    "id_caller": "admin@login.fr",
+    "email_caller": "admin@login.fr",
     "password_caller": "admin"
 })
 print("le statut de la requête est " + str(req.status_code))
@@ -35,9 +35,9 @@ print("enregistrer (administrator@admin.fr, secret) comme administrateur.")
 print("----------------------------------------------------------")
 req = requests.post("http://127.0.0.1:5000/api/auth/register", 
 json={
-    'id_caller': "admin@login.fr",
+    'email_caller': "admin@login.fr",
     'password_caller': "admin",
-    'id': "administrator@admin.fr",
+    'email': "administrator@admin.fr",
     'password': "secret",
     'firstName': "adminFirstName",
     'lastName': "adminLastName",
@@ -60,11 +60,10 @@ print(req.json())
 
 print("  ")
 print("  ")
-print("liste des produits (GET /api/products.")
+print("liste des produits (GET /api/produits.")
 print("--------------------------------------------------------------")
-print("consulter avec le profil (admin@login.fr, admin) (token)")
 print("----------------------------------------------------------")
-req = requests.get("http://127.0.0.1:5000/api/products", headers={"token": token})
+req = requests.get("http://127.0.0.1:5000/api/produits")
 print("le statut de la requête est " + str(req.status_code))
 print("Laliste des produits est")
 print(req.json())
@@ -72,11 +71,10 @@ print(req.json())
 
 print("  ")
 print("  ")
-print("Afficher pproduits spécifique (GET /api/products/id.")
+print("Afficher pproduits spécifique (GET /api/produits/id.")
 print("--------------------------------------------------------------")
-print("consulter avec le profil (admin@login.fr, admin) (token)")
 print("----------------------------------------------------------")
-req = requests.get("http://127.0.0.1:5000/api/products/prod001", headers={"token": token})
+req = requests.get("http://127.0.0.1:5000/api/produits/prod001")
 print("le statut de la requête est " + str(req.status_code))
 print("Le produit d'identifiant prod001 est le suivant")
 print(req.json())
@@ -84,11 +82,11 @@ print(req.json())
 
 print("  ")
 print("  ")
-print("créer un nouveau produit (POST /api/products.")
+print("créer un nouveau produit (POST /api/produits.")
 print("--------------------------------------------------------------")
 print("avec le profil (admin@login.fr, admin) (token)")
 print("----------------------------------------------------------")
-req = requests.post("http://127.0.0.1:5000/api/products", headers={"token": token},
+req = requests.post("http://127.0.0.1:5000/api/produits", headers={"token": token},
 json={
     "id" : "prod004",
     "name" : "Lucid Clavier sans fil",
@@ -101,11 +99,11 @@ print("le statut de la requête est " + str(req.status_code))
 print(req.json().get("message"))
 print("  ")
 print("  ")
-print("modifier un produit (POST /api/products/<id>.")
+print("modifier un produit (POST /api/produits/<id>.")
 print("--------------------------------------------------------------")
 print("avec le profil (admin@login.fr, admin) (token)")
 print("----------------------------------------------------------")
-req = requests.put("http://127.0.0.1:5000/api/products/prod004", headers={"token": token},
+req = requests.put("http://127.0.0.1:5000/api/produits/prod004", headers={"token": token},
 json={
     "name" : "Lucid Clavier sans fil modifié",
     "description" : "Clavier portatif modifié",
@@ -116,32 +114,31 @@ print("le statut de la requête est " + str(req.status_code))
 print(req.json().get("message"))
 print("  ")
 print("  ")
-print("Afficher pproduits spécifique qui a été modifié (GET /api/products/prod004.")
+print("Afficher pproduits spécifique qui a été modifié (GET /api/produits/prod004.")
 print("--------------------------------------------------------------")
-print("consulter avec le profil (admin@login.fr, admin) (token)")
 print("----------------------------------------------------------")
-req = requests.get("http://127.0.0.1:5000/api/products/prod004", headers={"token": token})
+req = requests.get("http://127.0.0.1:5000/api/produits/prod004")
 print("le statut de la requête est " + str(req.status_code))
 print(req.json())
 
 print("  ")
 print("  ")
-print("Suprimer le produits spécifique qui a été modifié (DELETE /api/products/prod004.")
+print("Suprimer le produits spécifique qui a été modifié (DELETE /api/produits/prod004.")
 print("--------------------------------------------------------------")
 print("suppression avec le profil (admin@login.fr, admin) (token)")
 print("----------------------------------------------------------")
-req = requests.delete("http://127.0.0.1:5000/api/products/prod004", headers={"token": token})
+req = requests.delete("http://127.0.0.1:5000/api/produits/prod004", headers={"token": token})
 print("le statut de la requête est " + str(req.status_code))
 print(req.json().get("message"))
 
 
 print("  ")
 print("  ")
-print("Rechercher produits par nom, prix, disponibilité (GET /api/products/name/price.")
+print("Rechercher produits par nom, prix, disponibilité (GET /api/produits/name/price.")
 print("--------------------------------------------------------------")
 print("accessible par tout le monde")
 print("----------------------------------------------------------")
-req = requests.get("http://127.0.0.1:5000/api/products/azus/45")
+req = requests.get("http://127.0.0.1:5000/api/produits/azus/45")
 print("le statut de la requête est " + str(req.status_code))
 print(req.json())
 
@@ -153,6 +150,7 @@ print("-------------------------------------")
 req = requests.post("http://127.0.0.1:5000/api/commandes", headers={"token": token},
 json={
     'cart_id': 1,
+    'adress': "17 rue du petit Neuilly, 59530 Orsinval",
     'cart_items': [
         {
             'cart_item_id': 1,
@@ -202,10 +200,10 @@ print(req.json())
 
 print("  ")
 print("  ")
-print("Modifier un  cart  de la commande spécifique d'identifiant id (PUT /api/commandes)")
+print("Modifier un  cart  de la commande spécifique d'identifiant id (PATCH /api/commandes)")
 print("l'utilisateur est référencé par token")
 print("-------------------------------------")
-req = requests.put("http://127.0.0.1:5000/api/commandes/1", headers={"token": token},
+req = requests.patch("http://127.0.0.1:5000/api/commandes/1", headers={"token": token},
 json={
     "status" : "pending",
     "adress" : "5 rue du moulin, 59530 Orsinval",

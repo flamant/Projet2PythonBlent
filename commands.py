@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from sqlalchemy.orm.exc import NoResultFound
 from utils_encoding import decode_token
 from dao_commands import create_cart_when_not_exists, create_cart_item_when_not_exists, get_list_of_carts, get_specific_cart, get_list_of_cart_items, modify_command_status
@@ -8,6 +8,7 @@ import json
 from models import Cart, CartItem
 import datetime
 from extensions import db
+
 
 command_bp = Blueprint("commands", __name__)
 
@@ -25,6 +26,7 @@ def createNewCommand():
         user_id = payload.get("user") 
         body = request.get_json()
         cart_id = body.get("cart_id")
+        adress = body.get("adress")
         cart_items = body.get("cart_items")
         n = len(cart_items)
         item = [dict() for x in range(n)]
@@ -38,7 +40,7 @@ def createNewCommand():
         try:
             cart = db.session.query(Cart).filter_by(id=cart_id).one()
         except NoResultFound:
-            cart = create_cart_when_not_exists(Cart(id=1, created_at=datetime.datetime.now(), adress="17 rue du petit Neuilly, 59530 Orsinval", user_id=user_id, status='processing'))
+            cart = create_cart_when_not_exists(Cart(id=1, created_at=datetime.datetime.now(), adress=adress, user_id=user_id, status='validée'))
 
         i = 0
         output_information = []
@@ -99,8 +101,8 @@ def getLigneDeCommande(id):
     return {"error": "Jeton d'accès invalide."}, 401
 
 
-@command_bp.route('/<id>', methods=["PUT"])
-#"Modifier une commande d'identifiant id (PUT /api/commandes/{id}) - Admin uniquement"
+@command_bp.route('/<id>', methods=["PATCH"])
+#"Modifier une commande d'identifiant id (PATCH /api/commandes/{id}) - Admin uniquement"
 def ModifyCommandStatus(id):
     token = request.headers.get("token", "0")
     body = request.get_json()

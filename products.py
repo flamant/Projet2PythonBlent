@@ -11,28 +11,22 @@ from dotenv import load_dotenv, dotenv_values
 # loading variables from .env file
 load_dotenv() 
 
-products_bp = Blueprint('products', __name__)
+products_bp = Blueprint('produits', __name__)
 
 
 @products_bp.route('', methods=["GET"])
 def getProductList():
-    token = request.headers.get("token", "0")
-    if decode_token(token):
-        all_products = read_products()
-        result = []
-        for product in all_products:
-            result.append(json.dumps(product.to_dict()))
-        return result
-    return {"error": "Jeton d'accès invalide."}, 401
+    all_products = read_products()
+    result = []
+    for product in all_products:
+        result.append(json.dumps(product.to_dict()))
+    return result
 
 @products_bp.route('/<id>', methods=["GET"])
 def getSpecificProduct(id):
-    token = request.headers.get("token", "0")
-    if decode_token(token):
-        product = read_specific_product(id)
-        result = json.dumps(product.to_dict())
-        return result
-    return {"error": "Jeton d'accès invalide."}, 401
+    product = read_specific_product(id)
+    result = json.dumps(product.to_dict())
+    return result
 
 
 @products_bp.route('', methods=["POST"])

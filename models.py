@@ -53,7 +53,7 @@ class Cart(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     status = db.Column(db.String(15), default='processing')
     adress = db.Column(db.String(100), nullable=False)
-    user_id = db.Column(db.String(100), db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.String(100), db.ForeignKey('users.email'), nullable=False)
     
     
     # Relation avec les éléments du panier
@@ -75,7 +75,7 @@ class Cart(db.Model):
 class User(db.Model):
     __tablename__ = 'users'
     
-    id = db.Column(db.String(100), primary_key=True)
+    email = db.Column(db.String(100), primary_key=True)
     password = db.Column(db.String(500), nullable=False)
     firstName = db.Column(db.String(500), nullable=False)
     lastName = db.Column(db.String(500), nullable=False)
@@ -85,9 +85,9 @@ class User(db.Model):
 
     
     def __repr__(self):
-        return 'id={0}, password={1}, firstName={2}, lastName={3}, client={4}, administrator={5}'.format(self.id, self.password, self.firstName, self.lastName, self.client, self.administrator)
+        return 'email={0}, password={1}, firstName={2}, lastName={3}, client={4}, administrator={5}'.format(self.email, self.password, self.firstName, self.lastName, self.client, self.administrator)
     def to_dict(self):        
-        return { "id": self.id, "password": self.password, "firstName": self.firstName, "lastName": self.lastName, "client": self.client, "administrator": self.administrator}
+        return { "email": self.email, "password": self.password, "firstName": self.firstName, "lastName": self.lastName, "client": self.client, "administrator": self.administrator}
 
 
 
