@@ -59,7 +59,7 @@ def test_user_is_created(db_session):
     create_user(user)
 
     found = db_session.session.query(User).filter_by(email="test@mail.fr").one()
-    assert found.id == "test@mail.fr"
+    assert found.email == "test@mail.fr"
     assert found.password == "secret"
     assert found.firstName == "firstName"
     assert found.lastName == "lastName"
@@ -105,7 +105,7 @@ def test_get_user(db_session):
     create_user(user)
 
     found = get_user("get@mail.fr")
-    assert found.id == "get@mail.fr"
+    assert found.email == "get@mail.fr"
     assert found.administrator is True
 
 
@@ -138,14 +138,14 @@ def test_get_all_user(db_session):
     founds = get_list_of_users()
     assert len(founds) == 2
     founds = [op for op in founds]
-    assert founds[0].id == "get@mail.fr"
+    assert founds[0].email == "get@mail.fr"
     assert founds[0].password == "secret"
     assert founds[0].firstName == "firstName"
     assert founds[0].lastName == "lastName"
     assert founds[0].client == False
     assert founds[0].administrator == True
 
-    assert founds[1].id == "get1@mail.fr"
+    assert founds[1].email == "get1@mail.fr"
     assert founds[1].password == "secret1"
     assert founds[1].firstName == "firstName1"
     assert founds[1].lastName == "lastName1"
