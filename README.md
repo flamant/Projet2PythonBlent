@@ -135,7 +135,7 @@ Renvoie les ligens de commande (cartItem)
 - Modifier un  cart  de la commande spécifique d'identifiant id (PUT /api/commandes). Avec token comme moyen d'authentification dans le header.
 Uniquement accessible par un administrateur
 body : json={
-    "status" : "pending",
+    "status" : "en attente",
     "adress" : "5 rue du moulin, 59530 Orsinval",
     "user_id" : "flamant@club-internet.fr"
 })

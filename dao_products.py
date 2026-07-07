@@ -77,15 +77,19 @@ def delete_product(product_id):
 
 # cette métode retourne les produits dont le nom contiant name, puis les produits ayant un prix le plus proche 
 # de price et dont le stock est supérieur à 0 (disponible)
-def get_Filtered_Products(name, price):
-    products1 = db.session.query(Product).filter(and_(Product.name.contains(name), Product.stock > 0)).all()
-    products2 = db.session.query(Product).filter(Product.stock > 0).order_by(asc(func.abs(Product.price-price)), desc(Product.stock)).all()
+def get_Filtered_Products(characteristic_name, characteristic_value):
+    products1 = None
+    if characteristic_name == "name":
+        products1 = db.session.query(Product).filter(and_(Product.name.contains(characteristic_value), Product.stock > 0)).all()
+    if characteristic_name == "category":
+        products1 = db.session.query(Product).filter(and_(Product.category.contains(characteristic_value), Product.stock > 0)).all()
+    if characteristic_name == "description":
+        products1 = db.session.query(Product).filter(and_(Product.description.contains(characteristic_value), Product.stock > 0)).all()
+    if characteristic_name == "price":
+        products1 = db.session.query(Product).filter(Product.stock > 0).order_by(asc(func.abs(Product.price-characteristic_value)), desc(Product.stock)).all()
+    if characteristic_name == "stock":
+        products1 = db.session.query(Product).filter(Product.stock > 0).order_by(desc(func.abs(Product.stock-characteristic_value))).all()
     result = []
-    ids = []
     for product in products1:
         result.append(product.to_dict())
-        ids.append(product.id)
-    for product in products2:
-        if product.id not in ids:
-            result.append(product.to_dict())
     return result

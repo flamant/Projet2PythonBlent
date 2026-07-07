@@ -89,10 +89,10 @@ def test_get_list_of_carts_when_invalid_token(db_session):
 
 def test_get_list_of_carts_when_role_administrator_and_role_client(db_session):
     # admin@login.fr create a cart
-    new_cart = Cart(id=1, created_at=datetime.now(), adress="10 rue du moulin, 59530 Orsinval", user_id="admin@login.fr", status='processing')
+    new_cart = Cart(id=1, created_at=datetime.now(), adress="10 rue du moulin, 59530 Orsinval", user_id="admin@login.fr", status='validée')
     created_cart = create_cart_when_not_exists(new_cart)
     # flamant@club-internet.fr create a cart
-    new_cart = Cart(id=1, created_at=datetime.now(), adress="17 rue du petit Neuilly,59530 Orsinval", user_id="flamant@club-internet.fr", status='processing')
+    new_cart = Cart(id=1, created_at=datetime.now(), adress="17 rue du petit Neuilly,59530 Orsinval", user_id="flamant@club-internet.fr", status='validée')
     created_cart = create_cart_when_not_exists(new_cart)
     all_carts = get_list_of_carts(token_admin, os.environ.get("JWT_SECRET"))
     #all_carts = get_list_of_carts(os.getenv("token_admin"), os.getenv("JWT_SECRET"))
@@ -101,7 +101,7 @@ def test_get_list_of_carts_when_role_administrator_and_role_client(db_session):
     assert all_carts[1].id == 2
     ln = Cart.query.delete()
     db.session.commit()
-    new_cart = Cart(id=1, created_at=datetime.now(), adress="17 rue du petit Neuilly,59530 Orsinval", user_id="flamant@club-internet.fr", status='processing')
+    new_cart = Cart(id=1, created_at=datetime.now(), adress="17 rue du petit Neuilly,59530 Orsinval", user_id="flamant@club-internet.fr", status='validée')
     created_cart = create_cart_when_not_exists(new_cart)
     all_carts = get_list_of_carts(token_antoine, os.getenv("JWT_SECRET"))
     assert len(all_carts) == 1
@@ -109,7 +109,7 @@ def test_get_list_of_carts_when_role_administrator_and_role_client(db_session):
         
 
 def test_get_specific_cart(db_session):
-    new_cart = Cart(id=1, created_at=datetime.now(), adress="17 rue du petit Neuilly,59530 Orsinval", user_id="flamant@club-internet.fr", status='processing')
+    new_cart = Cart(id=1, created_at=datetime.now(), adress="17 rue du petit Neuilly,59530 Orsinval", user_id="flamant@club-internet.fr", status='validée')
     created_cart = create_cart_when_not_exists(new_cart)
     specific_cart = get_specific_cart(1)
     assert specific_cart.id == 1
@@ -119,7 +119,7 @@ def test_get_specific_cart(db_session):
 
 
 def test_get_list_of_cart_items(db_session):
-    new_cart = Cart(id=1, created_at=datetime.now(), adress="17 rue du petit Neuilly,59530 Orsinval", user_id="flamant@club-internet.fr", status='processing')
+    new_cart = Cart(id=1, created_at=datetime.now(), adress="17 rue du petit Neuilly,59530 Orsinval", user_id="flamant@club-internet.fr", status='validée')
     created_cart = create_cart_when_not_exists(new_cart)
     cartItem = CartItem(id=1, cart_id=1, product_id="prod001", quantity=15)
     output_information = []
@@ -138,16 +138,16 @@ def test_get_list_of_cart_items(db_session):
     assert all_cart_items[2].id == 3
 
 def test_modify_command_status(db_session):
-    new_cart = Cart(id=1, created_at=datetime.now(), adress="17 rue du petit Neuilly,59530 Orsinval", user_id="flamant@club-internet.fr", status='processing')
+    new_cart = Cart(id=1, created_at=datetime.now(), adress="17 rue du petit Neuilly,59530 Orsinval", user_id="flamant@club-internet.fr", status='validée')
     created_cart = create_cart_when_not_exists(new_cart)
     id = 1
     created_at=datetime.now()
-    status = 'pending'
+    status = 'en attente'
     adress = "10 rue du moulin, 59530 Orsinval"
     user_id = 2
     cart_modified = modify_command_status(id, created_at, status, adress, user_id)
     assert cart_modified.id == 1
-    assert cart_modified.status == 'pending'
+    assert cart_modified.status == 'en attente'
     assert cart_modified.adress == "10 rue du moulin, 59530 Orsinval"
     assert cart_modified.user_id == '2'
         

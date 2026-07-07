@@ -29,11 +29,11 @@ def create_cart_item_when_not_exists(cartItem, output_information):
         else:
             old_stock = old_stock - cartItem.quantity
             output_information.append("le produit d'identifiant "+str(cartItem.product_id) + " est en quantité suffisante. Il ne restera en stock, que "+str(old_stock))
-        product_in_data_base.stock = old_stock
-        db.session.merge(product_in_data_base)
-        db.session.commit()
         new_cart_item = CartItem(id=next_id_cart_item_max, cart_id=cartItem.cart_id, product_id=cartItem.product_id, quantity=cartItem.quantity)
         db.session.merge(new_cart_item)
+        db.session.commit()
+        product_in_data_base.stock = old_stock
+        db.session.merge(product_in_data_base)
         db.session.commit()
         return new_cart_item
     else:
@@ -48,7 +48,7 @@ def create_cart_when_not_exists(cart):
 
         currentDateTime = datetime.now()
         next_max_cart_id = cart_id_max +1
-        new_cart = Cart(id=next_max_cart_id, created_at=currentDateTime, adress=cart.adress, user_id=cart.user_id, status='pending')
+        new_cart = Cart(id=next_max_cart_id, created_at=currentDateTime, adress=cart.adress, user_id=cart.user_id, status='validée')
         db.session.merge(new_cart)
         db.session.commit()
         return new_cart

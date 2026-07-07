@@ -51,7 +51,7 @@ class Cart(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    status = db.Column(db.String(15), default='processing')
+    status = db.Column(db.String(15), default='en attente')
     adress = db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.String(100), db.ForeignKey('users.email'), nullable=False)
     

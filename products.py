@@ -88,7 +88,7 @@ def deleteProduct(id):
 
 
 
-@products_bp.route('/<name>/<price>', methods=["GET"])
-def getFilteredProducts(name, price):
-    products = get_Filtered_Products(name, price)
+@products_bp.route('/<characteristic_name>/<characteristic_value>', methods=["GET"])
+def getFilteredProducts(characteristic_name, characteristic_value):
+    products = get_Filtered_Products(characteristic_name, characteristic_value)
     return products

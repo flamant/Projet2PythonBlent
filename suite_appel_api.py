@@ -205,7 +205,7 @@ print("l'utilisateur est référencé par token")
 print("-------------------------------------")
 req = requests.patch("http://127.0.0.1:5000/api/commandes/1", headers={"token": token},
 json={
-    "status" : "pending",
+    "status" : "validée",
     "adress" : "5 rue du moulin, 59530 Orsinval",
     "user_id" : "flamant@club-internet.fr"
 })
