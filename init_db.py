@@ -12,11 +12,25 @@ hashed_antoine = generate_password_hash("antoine")
 
 
 def add_sample_products_and_add_admin_and_client():
+    # Créer quelques categories
+    categories = [
+        Category(id=1, category='computer', description='PC Portable Gamer'),
+        Category(id=2, category='souris', description='Souris ergonomique'),
+        Category(id=3, category='clavier', description='Clavier pour gaming')
+    ]
+
+        # Merge évite les doublons si le script est relancé
+    for category in categories:
+        db.session.merge(category)
+    
+    # Commit pour sauvegarder les changements dans la base de données
+    db.session.commit()
+    print("Categories ajoutées avec succès!")
     # Créer quelques produits
     products = [
-        Product(id='prod001', name='Azus TUF F15', category='computer', description='PC Portable Gamer', price=899, stock=10),
-        Product(id='prod002', name='UGreen Souris sans fil', category='souris', description='Souris ergonomique', price=49.99, stock=20),
-        Product(id='prod003', name='Logitech Clavier mécanique', category='clavier', description='Clavier pour gaming', price=129, stock=15)
+        Product(id='prod001', name='Azus TUF F15', category_id=1, description='PC Portable Gamer', price=899, stock=10),
+        Product(id='prod002', name='UGreen Souris sans fil', category_id=2, description='Souris ergonomique', price=49.99, stock=20),
+        Product(id='prod003', name='Logitech Clavier mécanique', category_id=3, description='Clavier pour gaming', price=129, stock=15)
     ]
 
         # Merge évite les doublons si le script est relancé

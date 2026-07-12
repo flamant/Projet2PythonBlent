@@ -46,8 +46,12 @@ def createNewProduct():
         return jsonify({"error": "le token est non valide."}), 401
     role = payload.get("role")
     if role == "administrator" and decode_token(token):
-        create_product(Product(id=id, name=name, category=category, description=description, price=price, stock=stock))
-        return jsonify({"message" : "Le produit a bien été créé en base de donnée."}), 200
+        category = db.session.query(Category).filter(Category.category == category).all()
+        if category == None:
+            return {"error": "La categorie n'a pas été trouvée en base."}, 401
+        else:  
+            create_product(Product(id=id, name=name, category_id=category.id, description=description, price=price, stock=stock))
+            return jsonify({"message" : "Le produit a bien été créé en base de donnée."}), 200
     else:
         return {"error": "seul un administrateur a le droit de créer un produit et l'utilisateur doit être correctement authentifié."}, 401
 
@@ -68,8 +72,12 @@ def modifyProduct(id):
         return jsonify({"error": "le token est non valide."}), 401
     role = payload.get("role")
     if role == "administrator" and decode_token(token):
-        update_product(Product(id=id, name=name, category=category, description=description, price=price, stock=stock))
-        return jsonify({"message" : "Le produit a bien été modifié en base de donnée."}), 201
+        category = db.session.query(Category).filter(Category.category == category).all()
+        if category == None:
+            return {"error": "La categorie n'a pas été trouvée en base."}, 401
+        else:  
+            update_product(Product(id=id, name=name, category_id=category.id, description=description, price=price, stock=stock))
+            return jsonify({"message" : "Le produit a bien été modifié en base de donnée."}), 201
     return {"error": "seul un administrateur a le droit de créer un produit et l'utilisateur doit être correctement authentifié."}, 401
 
 @products_bp.route('/<id>', methods=["DELETE"])

@@ -27,6 +27,19 @@ class CartItem(db.Model):
     def to_dict(self):        
         return { "id": self.id, "cart_id": self.cart_id, "product_id": self.product_id, "quantity": self.quantity}
 
+class Category(db.Model):
+    __tablename__ = 'categories'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    category = db.Column(db.String(20), nullable=False)
+    description = db.Column(db.Text)
+    
+    def __repr__(self):
+        return 'Category id={0}, category={1}, description={2}'.format(self.id, self.category, self.description)
+
+
+    def to_dict(self):        
+        return { "id": self.id, "category": self.category, "description": self.description}
 
 # Définition des modèles
 class Product(db.Model):
@@ -34,17 +47,20 @@ class Product(db.Model):
     
     id = db.Column(db.String(10), primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    category = db.Column(db.String(20), nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
     description = db.Column(db.Text)
     price = db.Column(db.Float, nullable=False)
     stock = db.Column(db.Integer, default=0)
+
+    # Relation avec le produit
+    category = db.relationship('Category', backref='products')
     
     def __repr__(self):
-        return 'Product id={0}, name={1}, category={2}, description={3}, price={4}, stock={5}'.format(self.id, self.name, self.category, self.description, self.price, self.stock)
+        return 'Product id={0}, name={1}, category_id={2}, description={3}, price={4}, stock={5}'.format(self.id, self.name, self.category.id, self.description, self.price, self.stock)
 
 
     def to_dict(self):        
-        return { "id": self.id, "name": self.name, "category": self.category, "description": self.description, "price": self.price, "stock": self.stock}
+        return { "id": self.id, "name": self.name, "category_id": self.category_id, "description": self.description, "price": self.price, "stock": self.stock}
 
 class Cart(db.Model):
     __tablename__ = 'carts'
