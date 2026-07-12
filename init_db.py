@@ -2,7 +2,7 @@ from utils_encoding import hash_password
 from extensions import db
 from app import app
 import models
-from models import User, Product
+from models import User, Product, Category
 from werkzeug.security import generate_password_hash, check_password_hash
 
 hashed_admin = generate_password_hash("admin")

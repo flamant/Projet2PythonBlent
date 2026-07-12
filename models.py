@@ -31,7 +31,7 @@ class Category(db.Model):
     __tablename__ = 'categories'
     
     id = db.Column(db.Integer, primary_key=True)
-    category = db.Column(db.String(20), nullable=False)
+    category = db.Column(db.String(20), unique=True, nullable=False)
     description = db.Column(db.Text)
     
     def __repr__(self):

@@ -88,7 +88,7 @@ print("avec le profil (admin@login.fr, admin) (token)")
 print("----------------------------------------------------------")
 req = requests.post("http://127.0.0.1:5000/api/produits", headers={"token": token},
 json={
-    "id" : "prod004",
+    "id" : "prod005",
     "name" : "Lucid Clavier sans fil",
     "category" : "clavier", 
     "description" : "Clavier portatif",
@@ -107,6 +107,7 @@ req = requests.put("http://127.0.0.1:5000/api/produits/prod004", headers={"token
 json={
     "name" : "Lucid Clavier sans fil modifié",
     "description" : "Clavier portatif modifié",
+    "category" : "clavier", 
     "price" : 145,
     "stock" : 25
 })

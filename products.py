@@ -3,11 +3,12 @@ from dao_products import read_products, read_specific_product, create_product, u
 from utils_encoding import decode_token
 import json
 import jwt
-from models import Product
+from models import Product, Category
 # importing os module for environment variables
 import os
 # importing necessary functions from dotenv library
 from dotenv import load_dotenv, dotenv_values 
+from extensions import db
 # loading variables from .env file
 load_dotenv() 
 
@@ -46,7 +47,7 @@ def createNewProduct():
         return jsonify({"error": "le token est non valide."}), 401
     role = payload.get("role")
     if role == "administrator" and decode_token(token):
-        category = db.session.query(Category).filter(Category.category == category).all()
+        category = db.session.query(Category).filter(Category.category == category).one()
         if category == None:
             return {"error": "La categorie n'a pas été trouvée en base."}, 401
         else:  
@@ -72,7 +73,7 @@ def modifyProduct(id):
         return jsonify({"error": "le token est non valide."}), 401
     role = payload.get("role")
     if role == "administrator" and decode_token(token):
-        category = db.session.query(Category).filter(Category.category == category).all()
+        category = db.session.query(Category).filter(Category.category == category).one()
         if category == None:
             return {"error": "La categorie n'a pas été trouvée en base."}, 401
         else:  
