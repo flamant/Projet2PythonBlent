@@ -80,7 +80,7 @@ def test_create_cart_item_when_not_exists_stock_not_sufficient(db_session):
 
 def test_create_cart_when_not_exists_when_wrong_argument(db_session):
     with pytest.raises(ValueError, match="Il y a une erreur dans les données envoyée pour créer un nouveau panier."):
-        cartItem = Product(id='prod001', name='Azus TUF F15', category_1=1, description='PC Portable Gamer', price=899, stock=10)
+        cartItem = Product(id='prod001', name='Azus TUF F15', category_id=1, description='PC Portable Gamer', price=899, stock=10)
         create_cart_when_not_exists(cartItem)
 
 def test_get_list_of_carts_when_invalid_token(db_session):

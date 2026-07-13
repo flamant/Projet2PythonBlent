@@ -48,6 +48,7 @@ def update_product(product):
         # Mettre à jour les attributs
         old_product.name = product.name
         old_product.description = product.description
+        old_product.category_id = product.category_id
         old_product.price = product.price
         old_product.stock = product.stock
         db.session.add(old_product)

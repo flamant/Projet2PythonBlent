@@ -2,8 +2,9 @@ from dao_products import read_products, read_specific_product, create_product, u
 from models import Product
 from extensions import db
 import pytest
-from models import User
+from models import User, Category
 from init_db import add_sample_products_and_add_admin_and_client
+from sqlalchemy import func
 
 def test_read_products(db_session):
     all_products = read_products()
@@ -42,7 +43,7 @@ def test_update_product(db_session):
     if id_category_max == None:
         id_category_max = 0
     next_id_category_max = id_category_max + 1
-    category = Category(id=next_id_category_max, category='computer modifié', description='PC Portable Gamer modifié'),
+    category = Category(id=next_id_category_max, category='computer modifié', description='PC Portable Gamer modifié')
 
     db.session.merge(category)
     
@@ -64,7 +65,7 @@ def test_update_product_not_found(db_session):
     if id_category_max == None:
         id_category_max = 0
     next_id_category_max = id_category_max + 1
-    category = Category(id=next_id_category_max, category='computer modifié', description='PC Portable Gamer modifié'),
+    category = Category(id=next_id_category_max, category='computer modifié', description='PC Portable Gamer modifié')
 
     db.session.merge(category)
     product = Product(id='prod006', name='Azus TUF F15 modifié', category_id=category.id, description='PC Portable Gamer modifié', price=845, stock=20)

@@ -103,7 +103,7 @@ print("modifier un produit (POST /api/produits/<id>.")
 print("--------------------------------------------------------------")
 print("avec le profil (admin@login.fr, admin) (token)")
 print("----------------------------------------------------------")
-req = requests.put("http://127.0.0.1:5000/api/produits/prod004", headers={"token": token},
+req = requests.put("http://127.0.0.1:5000/api/produits/prod005", headers={"token": token},
 json={
     "name" : "Lucid Clavier sans fil modifié",
     "description" : "Clavier portatif modifié",
@@ -118,7 +118,7 @@ print("  ")
 print("Afficher pproduits spécifique qui a été modifié (GET /api/produits/prod004.")
 print("--------------------------------------------------------------")
 print("----------------------------------------------------------")
-req = requests.get("http://127.0.0.1:5000/api/produits/prod004")
+req = requests.get("http://127.0.0.1:5000/api/produits/prod005")
 print("le statut de la requête est " + str(req.status_code))
 print(req.json())
 
@@ -128,7 +128,7 @@ print("Suprimer le produits spécifique qui a été modifié (DELETE /api/produi
 print("--------------------------------------------------------------")
 print("suppression avec le profil (admin@login.fr, admin) (token)")
 print("----------------------------------------------------------")
-req = requests.delete("http://127.0.0.1:5000/api/produits/prod004", headers={"token": token})
+req = requests.delete("http://127.0.0.1:5000/api/produits/prod005", headers={"token": token})
 print("le statut de la requête est " + str(req.status_code))
 print(req.json().get("message"))
 
