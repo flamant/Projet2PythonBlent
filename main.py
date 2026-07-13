@@ -5,6 +5,8 @@ import models
 from users import users_bp
 from products import products_bp
 from commands import command_bp
+from categories import categories_bp
+
 
 app.register_blueprint(users_bp, url_prefix="/api")
 app.register_blueprint(categories_bp, url_prefix="/api/categories")

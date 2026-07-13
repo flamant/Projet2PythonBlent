@@ -1,14 +1,16 @@
 from flask import Blueprint, request, jsonify
-from dao_products import read_products, read_specific_product, create_product, update_product, delete_product, get_Filtered_Products
+from dao_categories import delete_category, read_categories, read_specific_category
 from utils_encoding import decode_token
 import json
 import jwt
 from models import Product, Category
+from sqlalchemy import func
 # importing os module for environment variables
 import os
 # importing necessary functions from dotenv library
 from dotenv import load_dotenv, dotenv_values 
 from extensions import db
+from sqlalchemy.orm.exc import NoResultFound
 # loading variables from .env file
 load_dotenv() 
 
@@ -48,15 +50,15 @@ def createNewCategory():
         return jsonify({"error": "le token est non valide."}), 401
     role = payload.get("role")
     if role == "administrator" and decode_token(token):
-        category = db.session.query(Category).filter(Category.category == category).one()
-        if category == None:
+        try:
+            category = db.session.query(Category).filter(Category.category == category).one()
+        except NoResultFound:
             new_category = Category(id=next_id_category_max, category=category, description=description)
             db.session.merge(new_category)
             db.session.commit()
             result = json.dumps(new_category.to_dict())
             return result
-        else:  
-            return jsonify({"message" : "La categorie existe déjà."}), 200
+        return jsonify({"message" : "La categorie existe déjà."}), 200
     else:
         return {"error": "seul un administrateur a le droit de créer une categorie et l'utilisateur doit être correctement authentifié."}, 401
 
@@ -86,8 +88,8 @@ def modifyCategory(id):
             return result
     return {"error": "seul un administrateur a le droit de créer un produit et l'utilisateur doit être correctement authentifié."}, 401
 
-@products_bp.route('/<id>', methods=["DELETE"])
-def deleteProduct(id):
+@categories_bp.route('/<id>', methods=["DELETE"])
+def deleteCategory(id):
     token = request.headers.get("token", "0")
     payload = None
     try:
@@ -96,13 +98,7 @@ def deleteProduct(id):
         return jsonify({"error": "le token est non valide."}), 401
     role = payload.get("role")
     if role == "administrator" and decode_token(token):
-        delete_product(id)
+        delete_category(id)
         return jsonify({"message" : "Le produit a bien été supprimé en base de donnée."}), 200
     return {"error": "seul un administrateur a le droit de créer un produit et l'utilisateur doit être correctement authentifié."}, 401
 
-
-
-@products_bp.route('/<characteristic_name>/<characteristic_value>', methods=["GET"])
-def getFilteredProducts(characteristic_name, characteristic_value):
-    products = get_Filtered_Products(characteristic_name, characteristic_value)
-    return products
