@@ -29,3 +29,20 @@ def delete_category(category_id):
         return jsonify({"message" : "La Categorie a été supprimée de la base de donnée."}), 200
     else:
         return jsonify({"error" : "Categorie non trouvé en base de donnée."}), 401
+
+
+def get_Filtered_Categories(characteristic_name, characteristic_value):
+    categories1 = None
+    if characteristic_name == "category":
+        categories1 = db.session.query(Category).filter(Category.category.contains(characteristic_value),).all()
+    if characteristic_name == "description":
+        products1 = db.session.query(Category).filter(Category.description.contains(characteristic_value)).all()
+
+    result = []
+    if categories1:
+        for category in categories1:
+            result.append(category.to_dict())
+    else:
+        if characteristic_name == "category" or characteristic_name == "description":
+            return jsonify({"message" : "Il n'y a pas de produit dont le champs "+ characteristic_name +" contient la valeur " + characteristic_value + "."}), 200
+    return result
