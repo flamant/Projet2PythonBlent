@@ -76,8 +76,47 @@ print("--------------------------------------------------------------")
 print("----------------------------------------------------------")
 req = requests.get("http://127.0.0.1:5000/api/categories/1")
 print("le statut de la requête est " + str(req.status_code))
-print("Le produit d'identifiant prod001 est le suivant")
+print("La categorie d'identifiant 1 est le suivant")
 print(req.json())
+
+print("  ")
+print("  ")
+print("créer une nouvelle categorie (POST /api/categories.")
+print("--------------------------------------------------------------")
+print("avec le profil (admin@login.fr, admin) (token)")
+print("----------------------------------------------------------")
+req = requests.post("http://127.0.0.1:5000/api/categories", headers={"token": token},
+json={
+    "category" : "Lecteur DVD", 
+    "description" : "Lecteur DVD pour ordinateur"
+})
+print("La categorie créée est la suivante")
+print(req.json())
+
+print("  ")
+print("  ")
+print("modifier une categorie (POST /api/categories/<id>.")
+print("--------------------------------------------------------------")
+print("avec le profil (admin@login.fr, admin) (token)")
+print("----------------------------------------------------------")
+req = requests.put("http://127.0.0.1:5000/api/categories/4", headers={"token": token},
+json={
+    "category" : "Lecteur DVD externe",
+    "description" : "Lecteur DVD externe pour ordinateuré",
+})
+print("le statut de la requête est " + str(req.status_code))
+print("La categorie modifiée est la suivante")
+print(req.json())
+
+print("  ")
+print("  ")
+print("Suprimer une categorie (DELETE /api/produits/prod004.")
+print("--------------------------------------------------------------")
+print("suppression avec le profil (admin@login.fr, admin) (token)")
+print("----------------------------------------------------------")
+req = requests.delete("http://127.0.0.1:5000/api/categories/4", headers={"token": token})
+print("le statut de la requête est " + str(req.status_code))
+print(req.json().get("message"))
 
 print("  ")
 print("  ")

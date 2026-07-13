@@ -35,10 +35,9 @@ def getSpecificCategory(id):
 def createNewCategory():
     token = request.headers.get("token", "0")
     body = request.get_json()
-    id = body.get("id", "")
     category = body.get("category")
     description = body.get("description")
-    id_category_max = db.session.query(func.max(CATEGORY.id)).scalar()
+    id_category_max = db.session.query(func.max(Category.id)).scalar()
     if id_category_max == None:
         id_category_max = 0
     next_id_category_max = id_category_max + 1
@@ -51,23 +50,23 @@ def createNewCategory():
     if role == "administrator" and decode_token(token):
         category = db.session.query(Category).filter(Category.category == category).one()
         if category == None:
-            return {"error": "La categorie n'a pas été trouvée en base."}, 401
+            new_category = Category(id=next_id_category_max, category=category, description=description)
+            db.session.merge(new_category)
+            db.session.commit()
+            result = json.dumps(new_category.to_dict())
+            return result
         else:  
-            create_product(Product(id=id, name=name, category_id=category.id, description=description, price=price, stock=stock))
-            return jsonify({"message" : "Le produit a bien été créé en base de donnée."}), 200
+            return jsonify({"message" : "La categorie existe déjà."}), 200
     else:
-        return {"error": "seul un administrateur a le droit de créer un produit et l'utilisateur doit être correctement authentifié."}, 401
+        return {"error": "seul un administrateur a le droit de créer une categorie et l'utilisateur doit être correctement authentifié."}, 401
 
 
-@products_bp.route('/<id>', methods=["PUT"])
-def modifyProduct(id):
+@categories_bp.route('/<id>', methods=["PUT"])
+def modifyCategory(id):
     token = request.headers.get("token", "0")
     body = request.get_json()
-    name=body.get("name")
     category=body.get("category")
     description = body.get("description")
-    price = body.get("price")
-    stock = body.get("stock")
     payload = None
     try:
         payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
@@ -75,12 +74,16 @@ def modifyProduct(id):
         return jsonify({"error": "le token est non valide."}), 401
     role = payload.get("role")
     if role == "administrator" and decode_token(token):
-        category = db.session.query(Category).filter(Category.category == category).one()
-        if category == None:
+        category1 = db.session.query(Category).filter(Category.id == id).one()
+        if category1 == None:
             return {"error": "La categorie n'a pas été trouvée en base."}, 401
         else:  
-            update_product(Product(id=id, name=name, category_id=category.id, description=description, price=price, stock=stock))
-            return jsonify({"message" : "Le produit a bien été modifié en base de donnée."}), 201
+            category1.category = category
+            category1.description = description
+            db.session.merge(category1)
+            db.session.commit()
+            result = json.dumps(category1.to_dict())
+            return result
     return {"error": "seul un administrateur a le droit de créer un produit et l'utilisateur doit être correctement authentifié."}, 401
 
 @products_bp.route('/<id>', methods=["DELETE"])
