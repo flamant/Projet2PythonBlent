@@ -20,17 +20,13 @@ def read_specific_category(category_id):
 
 def delete_category(id):
     # Récupérer la categorie à supprimer
-    print("ca passe1")
     category = db.session.query(Category).filter_by(id=id).first()
     print(category)
     if category:
-        print("ca passe2")
         # Supprimer la categorie
         db.session.delete(category)
-        print("ca passe3")
         # Commit pour sauvegarder les changements
         db.session.commit()
-        print("ca passe4")
         return jsonify({"message" : "La Categorie a été supprimée de la base de donnée."}), 200
     else:
         return jsonify({"error" : "Categorie non trouvée en base de donnée."}), 401

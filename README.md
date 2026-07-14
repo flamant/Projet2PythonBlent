@@ -74,10 +74,31 @@ Une erreur d’import bloquait le démarrage de l’application (`ImportError: c
   - Profil d'un  utilisateur (GET /api/users/<email>). Avec token comme moyen d'authentification dans le header
   renvoie les informations de l'utilisateur
 
+# les end point de categories
+- liste des categories (GET /api/categories.). 
+  Renvoie la liste de categories
+- Afficher categorie spécifique (GET /api/categories/id.) 
+  Renvoie des informations sur la categorie
+- créer une nouvelle categorie (POST /api/categories.) Avec token comme moyen d'authentification dans le header
+  body: json={
+    "category" : "Lecteur DVD", 
+    "description" : "Lecteur DVD pour ordinateur"
+})
+Seulement accessible pour un administrateur
+- modifier une categorie (POST /api/categories/<id>. Avec token comme moyen d'authentification dans le header
+  body json={
+    "category" : "Lecteur DVD externe",
+    "description" : "Lecteur DVD externe pour ordinateuré",
+})
+Seulement accessible pour un administrateur
+- Suprimer une categorie (DELETE /api/categories/<id>.). Avec token comme moyen d'authentification dans le header
+Seulement accessible pour un administrateur
+
+
 # les end point de products
-- liste des produits (GET /api/produits.). Avec token comme moyen d'authentification dans le header
+- liste des produits (GET /api/produits.). 
   Renvoie la liste de produits
-- Afficher pproduits spécifique (GET /api/produits/id.) Avec token comme moyen d'authentification dans le header
+- Afficher pproduits spécifique (GET /api/produits/id.) 
   Renvoie des informations sur le produit
 - créer un nouveau produit (POST /api/produits.) Avec token comme moyen d'authentification dans le header
   body: json={

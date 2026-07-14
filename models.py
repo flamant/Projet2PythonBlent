@@ -47,13 +47,14 @@ class Product(db.Model):
     
     id = db.Column(db.String(10), primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('categories.id', ondelete='CASCADE'), nullable=False)
     description = db.Column(db.Text)
     price = db.Column(db.Float, nullable=False)
     stock = db.Column(db.Integer, default=0)
 
     # Relation avec le produit
-    category = db.relationship('Category', backref='products')
+    #category = db.relationship('Category', backref='products')
+    category = db.relationship('Category', backref=db.backref('products', cascade='all, delete-orphan', passive_deletes=True))
     
     def __repr__(self):
         return 'Product id={0}, name={1}, category_id={2}, description={3}, price={4}, stock={5}'.format(self.id, self.name, self.category.id, self.description, self.price, self.stock)

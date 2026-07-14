@@ -70,9 +70,7 @@ def connection_and_generate_token():
     pwhash = user.password
     if check_password_hash(pwhash, password):
 
-        
         if user.administrator:
-
             token = jwt.encode(
                 {
                     "exp": datetime.utcnow() + timedelta(hours=1),
