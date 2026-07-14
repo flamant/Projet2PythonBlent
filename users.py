@@ -98,11 +98,16 @@ def connection_and_generate_token():
 
 @users_bp.route('/users', methods=["GET"])
 def getListOfUsers():
+    print("ca passe1")
     token = request.headers.get("token", "0")
     try:
+        print("ca passe2")
         payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
+        print("ca passe3")
     except jwt.exceptions.InvalidTokenError:
+        print("ca passe4")
         return jsonify({"error": "le token est non valide."}), 401
+    print("ca passe5")
     role = payload.get("role")
     try:
         if role == "administrator" and decode_token(token):
