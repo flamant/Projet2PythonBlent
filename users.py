@@ -30,7 +30,7 @@ def user_profile(email):
         data = {"email": user.email, "password":"XXXXX", "firstName":user.firstName, "lastName":user.lastName, "client":user.client, "administrator":user.administrator }
         return jsonify(data),200
     else:
-        raise ValueError("L'appelant n'est pas correctement authentifié")
+        return jsonify({"message": f"L'appelant n'est pas correctement authentifié"}), 401 
 
 
 
@@ -47,17 +47,15 @@ def register_utilisateur():
     passwordCaller = body.get("password_caller", "0")
     
     user = get_user(id_requester)
-    
     pwhash = user.password
-
     if (check_password_hash(pwhash, passwordCaller) and createAdministrator) or createClient:
         if (user.administrator or (user.client and createClient)):
             password= generate_password_hash(password)
             create_user(User(email=email, password=password, firstName=firstName, lastName=lastName, client=createClient, administrator=createAdministrator))
         else:
-            raise ValueError("L'utilisateur n'a pas le droit de créer un tel compte")
+            return jsonify({"message": f"L'utilisateur n'a pas le droit de créer un tel compte"}), 401 
     else:
-        raise ValueError("L'appelant n'existe pas en base ou le mot de passe est incorrect")
+        return jsonify({"message": f"L'appelant n'existe pas en base ou le mot de passe est incorrect"}), 401
     return jsonify({"message": f"Compte cree pour id={id}"}), 201
 
 
@@ -98,16 +96,11 @@ def connection_and_generate_token():
 
 @users_bp.route('/users', methods=["GET"])
 def getListOfUsers():
-    print("ca passe1")
     token = request.headers.get("token", "0")
     try:
-        print("ca passe2")
         payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
-        print("ca passe3")
     except jwt.exceptions.InvalidTokenError:
-        print("ca passe4")
         return jsonify({"error": "le token est non valide."}), 401
-    print("ca passe5")
     role = payload.get("role")
     try:
         if role == "administrator" and decode_token(token):
@@ -117,7 +110,7 @@ def getListOfUsers():
                 result.append(json.dumps(user.to_dict()))
             return result
         else:
-            return {"error": "Jeton d'accès invalide ou le role qui fait la demande n'est pas administrateur."}, 401
+            return jsonify({"error": "Jeton d'accès invalide ou le role qui fait la demande n'est pas administrateur."}), 401
     except jwt.ExpiredSignatureError:
         return jsonify({"error": "Token expiré."}), 401
     except jwt.InvalidTokenError:

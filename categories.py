@@ -58,7 +58,7 @@ def createNewCategory():
             db.session.commit()
             result = json.dumps(new_category.to_dict())
             return result
-        return jsonify({"message" : "La categorie existe déjà."}), 200
+        return jsonify({"message" : "La categorie existe déjà."}), 401
     else:
         return {"error": "seul un administrateur a le droit de créer une categorie et l'utilisateur doit être correctement authentifié."}, 401
 

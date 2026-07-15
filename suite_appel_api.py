@@ -20,6 +20,18 @@ json={
 print("le statut de la requête est " + str(req.status_code))
 token = req.json().get("token")
 print("le token pour (admin@login.fr/admin) est :", token)
+
+print("Connexion et génération de token JWT (POST /api/auth/login).")
+print("connection avec (flamant@club-internet.fr,antoine) (administrator) and generer le token.")
+print("---------------------------------------------------------------------")
+req = requests.post("http://127.0.0.1:5000/api/auth/login",
+json={
+    "email_caller": "flamant@club-internet.fr",
+    "password_caller": "antoine"
+})
+print("le statut de la requête est " + str(req.status_code))
+token_utilisateur = req.json().get("token")
+print("le token pour (flamant@club-internet.fr,antoine) est :", token_utilisateur)
 print("  ")
 print("   ")
 print("obtenir la liste des utilisateur interrogé par un administrateur.")
