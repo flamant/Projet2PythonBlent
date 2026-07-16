@@ -69,11 +69,11 @@ def create_category(category):
                 db.session.commit()
                 return new_category
             else:
-                raise ValueError("Il y a une erreur dans les données envoyée pour créer une nouvelle categorie.")
+                return jsonify({"message" : "Il y a une erreur dans les données envoyée pour créer une nouvelle categorie."}), 401
         else:
-            raise ValueError("La categorie est déjà créée.")
+            return jsonify({"message" : "La categorie est déjà créée."}), 401
     else:
-        raise ValueError("Il y a une erreur dans les données envoyée pour créer une nouvelle categorie.")
+        return jsonify({"message" : "Il y a une erreur dans les données envoyée pour créer une nouvelle categorie."}), 401
 
 
 

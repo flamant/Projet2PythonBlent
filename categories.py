@@ -47,7 +47,7 @@ def createNewCategory():
     try:
         payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
     except jwt.exceptions.InvalidTokenError:
-        return jsonify({"error": "le token est non valide."}), 401
+        return jsonify({"message": "le token est non valide."}), 401
     role = payload.get("role")
     if role == "administrator" and decode_token(token):
         try:
@@ -58,9 +58,9 @@ def createNewCategory():
             db.session.commit()
             result = json.dumps(new_category.to_dict())
             return result
-        return jsonify({"message" : "La categorie existe déjà."}), 401
+        return jsonify({"message" : "La categorie est déjà créée."}), 401
     else:
-        return {"error": "seul un administrateur a le droit de créer une categorie et l'utilisateur doit être correctement authentifié."}, 401
+        return {"message": "seul un administrateur a le droit de créer une categorie et l'utilisateur doit être correctement authentifié."}, 401
 
 
 @categories_bp.route('/<id>', methods=["PUT"])
@@ -100,5 +100,5 @@ def deleteCategory(id):
     if role == "administrator" and decode_token(token):
         delete_category(id)
         return jsonify({"message" : "Le produit a bien été supprimé en base de donnée."}), 200
-    return {"error": "seul un administrateur a le droit de créer un produit et l'utilisateur doit être correctement authentifié."}, 401
+    return {"error": "seul un administrateur a le droit de créer une categorie et l'utilisateur doit être correctement authentifié."}, 401
 
