@@ -9,6 +9,7 @@ import os
 # importing necessary functions from dotenv library
 from dotenv import load_dotenv, dotenv_values 
 from extensions import db
+from sqlalchemy.orm.exc import NoResultFound
 # loading variables from .env file
 load_dotenv() 
 
@@ -47,8 +48,9 @@ def createNewProduct():
         return jsonify({"error": "le token est non valide."}), 401
     role = payload.get("role")
     if role == "administrator" and decode_token(token):
-        category = db.session.query(Category).filter(Category.category == category).one()
-        if category == None:
+        try:
+            category = db.session.query(Category).filter(Category.category == category).one()
+        except NoResultFound:
             return {"error": "La categorie n'a pas été trouvée en base."}, 401
         else:  
             create_product(Product(id=id, name=name, category_id=category.id, description=description, price=price, stock=stock))

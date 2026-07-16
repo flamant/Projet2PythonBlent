@@ -16,8 +16,11 @@ command_bp = Blueprint("commands", __name__)
 
 @command_bp.route('', methods=["POST"])
 def createNewCommand():
+    print("ca passe1")
     token = request.headers.get("token", "0")
+    print("ca passe11")
     if decode_token(token):
+        print("ca passe2")
         payload = None
         try:
             payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
@@ -63,6 +66,7 @@ def createNewCommand():
                }
         return {"message": "l'administrateur a bien créé cette commande."}, 200
     else:
+        print("ca passe3")
         return {"error": "l'utilisateur doit être correctement authentifié."}, 406
     
     

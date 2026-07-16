@@ -21,7 +21,6 @@ def read_specific_category(category_id):
 def delete_category(id):
     # Récupérer la categorie à supprimer
     category = db.session.query(Category).filter_by(id=id).first()
-    print(category)
     if category:
         # Supprimer la categorie
         db.session.delete(category)
