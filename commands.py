@@ -16,58 +16,46 @@ command_bp = Blueprint("commands", __name__)
 
 @command_bp.route('', methods=["POST"])
 def createNewCommand():
-    print("ca passe1")
     token = request.headers.get("token", "0")
-    print("ca passe11")
-    if decode_token(token):
-        print("ca passe2")
-        payload = None
-        try:
-            payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
-        except jwt.exceptions.InvalidTokenError:
-            return jsonify({"error": "le token est non valide."}), 401
-        user_id = payload.get("user") 
-        body = request.get_json()
-        cart_id = body.get("cart_id")
-        adress = body.get("adress")
-        cart_items = body.get("cart_items")
-        n = len(cart_items)
-        item = [dict() for x in range(n)]
-        number_cart_item=0
-        for cart_item in cart_items:
-            item[number_cart_item]['cart_item_id'] = cart_item['cart_item_id']
-            item[number_cart_item]['product_id'] = cart_item['product_id']
-            item[number_cart_item]['quantity'] = cart_item['quantity']
-            number_cart_item += 1
+    try:
+        payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
+    except jwt.exceptions.InvalidTokenError:
+        return jsonify({"error": "l'utilisateur doit être correctement authentifié."}), 401
 
+    user_id = payload.get("user")
+    body = request.get_json()
+    cart_id = body.get("cart_id")
+    adress = body.get("adress")
+    cart_items = body.get("cart_items")
+    n = len(cart_items)
+    item = [dict() for x in range(n)]
+    number_cart_item = 0
+    for cart_item in cart_items:
+        item[number_cart_item]['cart_item_id'] = cart_item['cart_item_id']
+        item[number_cart_item]['product_id'] = cart_item['product_id']
+        item[number_cart_item]['quantity'] = cart_item['quantity']
+        number_cart_item += 1
+
+    try:
+        cart = db.session.query(Cart).filter_by(id=cart_id).one()
+    except NoResultFound:
+        cart = create_cart_when_not_exists(Cart(id=1, created_at=datetime.datetime.now(), adress=adress, user_id=user_id, status='validée'))
+
+    i = 0
+    output_information = []
+    while i < number_cart_item:
         try:
-            cart = db.session.query(Cart).filter_by(id=cart_id).one()
+            item[i] = db.session.query(CartItem).filter_by(id=item[i]['cart_item_id']).one()
+            output_information.append("")
         except NoResultFound:
-            cart = create_cart_when_not_exists(Cart(id=1, created_at=datetime.datetime.now(), adress=adress, user_id=user_id, status='validée'))
+            item[i] = create_cart_item_when_not_exists(CartItem(id=item[i]['cart_item_id'], cart_id=cart_id, product_id=item[i]['product_id'], quantity=item[i]['quantity']), output_information)
+        i += 1
 
-        i = 0
-        output_information = []
-        while i < number_cart_item:
-            try:
-                item[i] = db.session.query(CartItem).filter_by(id=item[i]['cart_item_id']).one()
-                output_information.append("")
-            except NoResultFound:
-                item[i] = create_cart_item_when_not_exists(CartItem(id=item[i]['cart_item_id'], cart_id=cart_id, product_id=item[i]['product_id'], quantity=item[i]['quantity']), output_information)
-            i += 1
-            
-        a = []    
-        for i in range(len(item)):
-            a.append({"cart_item_id": item[i].id, "product_id" : item[i].product_id, "quantity": item[i].quantity, "comments": output_information[i]})
+    a = []
+    for i in range(len(item)):
+        a.append({"cart_item_id": item[i].id, "product_id": item[i].product_id, "quantity": item[i].quantity, "comments": output_information[i]})
 
-        result = {
-                'cart_id': cart.id,
-                'user_id': cart.user_id,
-                'cart_items': a
-               }
-        return {"message": "l'administrateur a bien créé cette commande."}, 200
-    else:
-        print("ca passe3")
-        return {"error": "l'utilisateur doit être correctement authentifié."}, 406
+    return {"message": "l'administrateur a bien créé cette commande."}, 200
     
     
 
