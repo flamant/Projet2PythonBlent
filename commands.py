@@ -62,35 +62,41 @@ def createNewCommand():
 @command_bp.route('', methods=["GET"])
 def getCartList():
     token = request.headers.get("token", "0")
-    if decode_token(token):
-        all_carts = get_list_of_carts(token, os.getenv("JWT_SECRET"))
-        result = []
-        for cart in all_carts:
-            result.append(json.dumps(cart.to_dict(), indent=4, sort_keys=True, default=str))
-        return result
-    return {"error": "Jeton d'accès invalide."}, 401
+    try:
+        payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
+    except jwt.exceptions.InvalidTokenError:
+        return jsonify({"error": "l'utilisateur doit être correctement authentifié."}), 401
+    all_carts = get_list_of_carts(token, os.getenv("JWT_SECRET"))
+    result = []
+    for cart in all_carts:
+        result.append(json.dumps(cart.to_dict(), indent=4, sort_keys=True, default=str))
+    return result
 
 print("Récupérer une commande spécifique (GET /api/commandes/{id}) (client or administrator)")
 print("-------------------------------------------------------------------------------------")
 @command_bp.route('/<id>', methods=["GET"])
 def getSpecificCommand(id):
     token = request.headers.get("token", "0")
-    if decode_token(token):
-        cart = get_specific_cart(id)
-        return json.dumps(cart.to_dict(), indent=4, sort_keys=True, default=str)
-    return {"error": "Jeton d'accès invalide."}, 401
+    try:
+        payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
+    except jwt.exceptions.InvalidTokenError:
+        return jsonify({"error": "l'utilisateur doit être correctement authentifié."}), 401
+    cart = get_specific_cart(id)
+    return json.dumps(cart.to_dict(), indent=4, sort_keys=True, default=str)
 
 
 @command_bp.route('/<id>/lignes', methods=["GET"])
 def getLigneDeCommande(id):
     token = request.headers.get("token", "0")
-    if decode_token(token):
-        all_cart_items = get_list_of_cart_items(id)
-        result = []
-        for cart_item in all_cart_items:
-            result.append(json.dumps(cart_item.to_dict()))
-        return result
-    return {"error": "Jeton d'accès invalide."}, 401
+    try:
+        payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=["HS256"])
+    except jwt.exceptions.InvalidTokenError:
+        return jsonify({"error": "l'utilisateur doit être correctement authentifié."}), 401
+    all_cart_items = get_list_of_cart_items(id)
+    result = []
+    for cart_item in all_cart_items:
+        result.append(json.dumps(cart_item.to_dict()))
+    return result
 
 
 @command_bp.route('/<id>', methods=["PATCH"])

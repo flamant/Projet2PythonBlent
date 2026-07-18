@@ -51,3 +51,37 @@ def test_create_commands_when_token_is_wrong(db_session):
     assert response.json() == {
         "error": "l'utilisateur doit être correctement authentifié."
     }
+
+
+def test_get_command_list(db_session):
+    response = requests.get("http://127.0.0.1:5000/api/commandes", headers={"token": "toto"})
+    assert response.status_code == 401
+    assert response.json() == {
+        "error": "l'utilisateur doit être correctement authentifié."
+    }
+
+def test_get_specific_command(db_session):
+    response = requests.get("http://127.0.0.1:5000/api/commandes/1", headers={"token": "token"})
+    assert response.status_code == 401
+    assert response.json() == {
+        "error": "l'utilisateur doit être correctement authentifié."
+    }
+
+def test_get_ligne_de_command(db_session):
+    response = requests.get("http://127.0.0.1:5000/api/commandes/1/lignes", headers={"token": "token"})
+    assert response.status_code == 401
+    assert response.json() == {
+        "error": "l'utilisateur doit être correctement authentifié."
+    }
+
+def test_modify_command_status(db_session):
+    response = requests.patch("http://127.0.0.1:5000/api/commandes/1", headers={"token": "token"},
+    json={
+        "status" : "validée",
+        "adress" : "5 rue du moulin, 59530 Orsinval",
+        "user_id" : "flamant@club-internet.fr"
+    })
+    assert response.status_code == 401
+    assert response.json() == {
+        "error": "le token est non valide."
+    }
