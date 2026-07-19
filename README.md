@@ -22,33 +22,37 @@ Une erreur d’import bloquait le démarrage de l’application (`ImportError: c
 #contenu du projet
   - sous le répertoire instance on trouve la base de donnée basic_store.db
   - app.py fichier où on défini app = Flask(__name__) et on initialise app dans la base
+  - categories.py où on definit tous les end point des categories
   - commands.py où on definit tous les end point des commandes
   - conftest.py où on définit une fixture pour les tests unitaires (initialisation BDD et suppression des données après avoir utilisé db dans les tests)
+  - dao_categories.py est la couche d'interaction avec la base de donnée pour la table categories
   - dao_commands.py est la couche d'interaction avec la base de donnée pour la table carts
   - dao_products.py est la couche d'interaction avec la base de donnée pour la table products
   - dao_users.py est la couche d'interaction avec la base de donnée pour la table users
   - extensions.py où on définit la BDD
   - init_db.py script d'initialisation de la base de donnée 
+  - main: liste des blueprints et lancement du serveur
   - install_libraries.sh, fichier Unix où on importe les librairies python
   - main.py fichier de démarage du serveur
   - models.py,  definition des tables et classes de l'application
-  - preliminaire.txt 2 lignes à executer pour créer un environnement de travail
   - products.py, endpoints de la table products
+  - fichier README.md
   - README.md, il contient la documentation du projet : installation, utilisation, roadmap, licence, etc.
-  - run_unix.sh, scripts de chargement des librairies python
+  - requirements.txt importation des librairies
   - suite_appel_api.py , script d'interrogation des API de l'application
-  - test_dao_commands.py, test_dao_products.py, test_dao_users.py, 3 fichiers de tests unitaires pour les commandes, les produits et les users
+  - test_dao_categories.py, test_dao_commands.py, test_dao_products.py, test_dao_users.py, 4 fichiers de tests unitaires pour les commandes, les produits et les users
   - users.py, endpoints de la table users
   - utils_encoding.py, fonctions utilitaires
 
   # comment utiliser l'application
   - après l'installation du projet se mettre dans le répertoire Projet2PythonBlent
-  - copier les 2 lignes du fichier preliminaire.txt et les executer
-  - executer run_unix.sh
+  - copier touts les lignes du fichier requirement.txt et les executer
   - executer flask --app main run
   - ouvrir une autre fenêtre de terminal 
-  - copier et executer les 2 lignes du fichier preliminaire.txt
+  - copier et executer les 2 première lignes du fichier requirement.txt
   - executer dans cette fenêtre python suite_appel_api.py
+  - pour les tests unitaires exécuter pytest test_dao_categories.py, puis pytest test_dao_commands.py, puis pytest test_dao_products.py puis pytest test_dao_users.py
+  - pour les tests d'integration, exécuter pytest test_categories.py, puis pytest test_dao_comands.py, puis pytest test_products.py puis pytest test_users.py
 
 # les end point de users
   - Connexion et génération de token JWT (POST /api/auth/login).

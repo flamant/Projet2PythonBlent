@@ -61,12 +61,13 @@ def create_category(category):
             next_id_category_max = id_category_max + 1
             try:
                 new_category = Category(id=next_id_category_max, category=category.category, description=category.description)
+                if new_category.__class__.__name__ == 'Category':
+                    db.session.merge(new_category)
+                    db.session.commit()
+                    return new_category
             except ValueError:
                 raise ValueError("Il y a une erreur dans les données envoyée pour créer une nouvelle categorie.")
-            if new_category.__class__.__name__ == 'Category':
-                db.session.merge(new_category)
-                db.session.commit()
-                return new_category
+                
             else:
                 return jsonify({"message" : "Il y a une erreur dans les données envoyée pour créer une nouvelle categorie."}), 401
         else:

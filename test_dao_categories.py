@@ -21,13 +21,21 @@ def test_create_category(db_session):
     assert new_category.category == "Lecteur DVD"
 
 def test_create_category_with_wrong_argument(db_session):
-    with pytest.raises(ValueError, match="Il y a une erreur dans les données envoyée pour créer une nouvelle categorie."):
-        create_category(User(email='admin@login.fr', password="test", firstName="firstName1", lastName="lastName1", client=False, administrator=True))
+    #with pytest.raises(ValueError, match="Il y a une erreur dans les données envoyée pour créer une nouvelle categorie."):
+    response, status_code = create_category(User(email='admin@login.fr', password="test", firstName="firstName1", lastName="lastName1", client=False, administrator=True))
+    assert status_code == 401
+    assert response.get_json() == {
+        "message": "Il y a une erreur dans les données envoyée pour créer une nouvelle categorie."
+    }
 
 def test_create_category_when_category_already_created(db_session):
     #create_product(Product(id='prod001', name='Azus TUF F15', category='computer', description='PC Portable Gamer', price=899, stock=10))
-    with pytest.raises(ValueError, match="La categorie est déjà créée."):
-        create_category(Category(id=1, category='computer', description='PC Portable Gamer'))
+    response, status_code = create_category(Category(id=1, category='computer', description='PC Portable Gamer'))
+
+    assert status_code == 401
+    assert response.get_json() == {
+        "message": "La categorie est déjà créée."
+    }
 
 
 def test_read_specific_category(db_session):
