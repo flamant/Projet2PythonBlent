@@ -100,7 +100,7 @@ def getLigneDeCommande(id):
 
 
 @command_bp.route('/<id>', methods=["PATCH"])
-#"Modifier une commande d'identifiant id (PATCH /api/commandes/{id}) - Admin uniquement"
+#Modifier une commande d'identifiant id (PATCH /api/commandes/{id}) - Admin uniquement"
 def ModifyCommandStatus(id):
     token = request.headers.get("token", "0")
     body = request.get_json()

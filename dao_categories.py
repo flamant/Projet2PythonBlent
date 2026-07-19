@@ -32,6 +32,7 @@ def delete_category(id):
 
 
 def get_Filtered_Categories(characteristic_name, characteristic_value):
+    # récupérer les categories par caractéristiques et leurs valeurs de caractéristique
     categories1 = None
     if characteristic_name == "category":
         categories1 = db.session.query(Category).filter(Category.category.contains(characteristic_value),).all()
@@ -52,6 +53,7 @@ def get_Filtered_Categories(characteristic_name, characteristic_value):
 
 
 def create_category(category):
+    # créer categories
     if category.__class__.__name__ == 'Category':
         new_category = db.session.query(Category).filter_by(id=category.id).first()
         if new_category is None:
